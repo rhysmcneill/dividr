@@ -1,0 +1,17 @@
+# Binaries
+/bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build output
+/vendor/
+
+# IDE
+.vscode/
+.idea/
+
+# Go
+*.test
+/pkg/mod/
