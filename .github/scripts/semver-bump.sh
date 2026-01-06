@@ -21,14 +21,70 @@ fi
 # Ensure full history
 git fetch --tags --prune
 
-last_tag=$(git describe --tags --abbrev=0 2>/dev/null || true)
+last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 if [ -z "$last_tag" ]; then
-  last_tag="v0.0.0"
+  echo "No tags found in repository. Creating initial tag v0.0.1"
+  # For the very first tag, check if there are any commits at all
+  if ! git rev-parse HEAD >/dev/null 2>&1; then
+    echo "Error: No commits in repository"
+    exit 1
+  fi
+  # Create initial tag and exit
+  new_tag="v0.0.1"
+
+  # Update CHANGELOG.md
+  changelog_file="CHANGELOG.md"
+  if [ ! -f "$changelog_file" ]; then
+    echo "# Changelog" > "$changelog_file"
+    echo "" >> "$changelog_file"
+    echo "All notable changes to this project will be documented in this file." >> "$changelog_file"
+    echo "" >> "$changelog_file"
+  fi
+
+  release_date=$(date +%Y-%m-%d)
+  commit_messages=$(git log --pretty="- %s" HEAD)
+
+  changelog_entry="## [$new_tag] - $release_date
+
+**Type:** INITIAL
+
+### Changes
+$commit_messages
+
+"
+
+  temp_file=$(mktemp)
+  if grep -q "^## \[" "$changelog_file"; then
+    awk -v entry="$changelog_entry" '/^## \[/{print entry; found=1} {print}' "$changelog_file" > "$temp_file"
+  else
+    awk -v entry="$changelog_entry" '1; /^All notable changes/{print ""; print entry}' "$changelog_file" > "$temp_file"
+  fi
+  mv "$temp_file" "$changelog_file"
+
+  git config user.name "github-actions[bot]"
+  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+  git add "$changelog_file"
+  git commit -m "chore(release): update CHANGELOG for $new_tag [skip ci]"
+  git tag -a "$new_tag" -m "chore(release): $new_tag [skip ci]"
+
+  remote_repo="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+  git push "$remote_repo" HEAD:main
+  git push "$remote_repo" "$new_tag"
+
+  echo "Initial tag created and pushed: $new_tag"
+  exit 0
 fi
 
 echo "Last tag: $last_tag"
 
-commits=$(git log --pretty=%B "$last_tag"..HEAD || true)
+# Validate that the tag actually exists in git history
+if ! git rev-parse "$last_tag" >/dev/null 2>&1; then
+  echo "Error: Tag $last_tag does not exist in git history"
+  exit 1
+fi
+
+commits=$(git log --pretty=%B "$last_tag"..HEAD)
 if [ -z "$commits" ]; then
   echo "No new commits since $last_tag; nothing to do."
   exit 0
