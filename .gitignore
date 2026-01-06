@@ -1,5 +1,6 @@
 # Binaries
 /bin/
+./bin/
 *.exe
 *.dll
 *.so
@@ -15,3 +16,10 @@
 # Go
 *.test
 /pkg/mod/
+
+# Configuration
+.env
+.air.toml
+
+# Docker secrets
+docker/secrets/*.txt
