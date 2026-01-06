@@ -3,7 +3,7 @@ repos:
     rev: v2.7.2
     hooks:
       - id: golangci-lint
-        args: [ "run", "./..." ]
+        args: ["--timeout=5m", "./cmd/...", "./internal/..."]
 
   - repo: https://github.com/tekwizely/pre-commit-golang
     rev: v1.0.0-rc.4

@@ -1,0 +1,21 @@
+# Ignore version control
+.git
+
+# Ignore local build artifacts
+bin/
+tmp/
+main
+
+# Ignore environment files (Security risk!)
+.env
+.env.local
+
+# Ignore OS files
+.DS_Store
+
+# Ignore dependencies (re-downloaded inside Docker)
+node_modules/
+vendor/
+
+# Docker secrets
+docker/secrets/*.txt

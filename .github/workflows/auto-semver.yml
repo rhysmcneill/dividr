@@ -1,0 +1,30 @@
+name: Auto Semantic Version Tag
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  semver-bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git --version
+
+      - name: Run semver bump script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          chmod +x .github/scripts/semver-bump.sh
+          .github/scripts/semver-bump.sh

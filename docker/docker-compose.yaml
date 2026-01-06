@@ -1,0 +1,39 @@
+version: '3.8'
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: dividr
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_DB: dividr
+    secrets:
+      - db_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  dividr:
+    image: ghcr.io/rhysmcneill/dividr:latest
+    environment:
+      APP_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: dividr
+      DB_NAME: dividr
+    secrets:
+      - db_password
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  db_data:
