@@ -42,7 +42,7 @@ if [ -z "$last_tag" ]; then
   fi
 
   release_date=$(date +%Y-%m-%d)
-  commit_messages=$(git log --pretty="- %s" HEAD)
+  commit_messages=$(git log --no-merges --pretty="- %s" HEAD)
 
   changelog_entry="## [$new_tag] - $release_date
 
@@ -110,7 +110,7 @@ if ! git rev-parse "$last_tag" >/dev/null 2>&1; then
   exit 1
 fi
 
-commits=$(git log --pretty=%B "$last_tag"..HEAD)
+commits=$(git log --no-merges --pretty=%B "$last_tag"..HEAD)
 if [ -z "$commits" ]; then
   echo "No new commits since $last_tag; nothing to do."
   exit 0
@@ -172,8 +172,8 @@ fi
 # Get current date
 release_date=$(date +%Y-%m-%d)
 
-# Extract commit messages for this release
-commit_messages=$(git log --pretty="- %s" "$last_tag"..HEAD)
+# Extract commit messages for this release (exclude merge commits)
+commit_messages=$(git log --no-merges --pretty="- %s" "$last_tag"..HEAD)
 
 # Create changelog entry
 changelog_entry="## [$new_tag] - $release_date
