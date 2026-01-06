@@ -73,6 +73,32 @@ $commit_messages
   git push "$remote_repo" "$new_tag"
 
   echo "Initial tag created and pushed: $new_tag"
+
+  # Create initial GitHub Release
+  echo "Creating initial GitHub Release for $new_tag"
+
+  release_response=$(curl -X POST \
+    -H "Authorization: token ${GITHUB_TOKEN}" \
+    -H "Accept: application/vnd.github.v3+json" \
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases" \
+    -d @- << EOF
+{
+  "tag_name": "$new_tag",
+  "name": "Release $new_tag",
+  "body": "## Initial Release\n\n$commit_messages",
+  "draft": false,
+  "prerelease": false
+}
+EOF
+)
+
+  if echo "$release_response" | grep -q '"id"'; then
+    echo "GitHub Release created successfully: $new_tag"
+  else
+    echo "Warning: Failed to create GitHub Release"
+    echo "Response: $release_response"
+  fi
+
   exit 0
 fi
 
@@ -190,3 +216,40 @@ git push "$remote_repo" HEAD:main
 git push "$remote_repo" "$new_tag"
 
 echo "Changelog updated and tag pushed: $new_tag"
+
+# Create GitHub Release
+echo "Creating GitHub Release for $new_tag"
+
+# Extract the changelog entry for this version
+changelog_body=$(awk -v tag="$new_tag" '
+  /^## \[/ {
+    if (found) exit;
+    if ($0 ~ tag) { found=1; next }
+  }
+  found && /^## \[/ { exit }
+  found { print }
+' "$changelog_file")
+
+# Create release using GitHub API
+release_response=$(curl -X POST \
+  -H "Authorization: token ${GITHUB_TOKEN}" \
+  -H "Accept: application/vnd.github.v3+json" \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases" \
+  -d @- << EOF
+{
+  "tag_name": "$new_tag",
+  "name": "Release $new_tag",
+  "body": "$changelog_body",
+  "draft": false,
+  "prerelease": false
+}
+EOF
+)
+
+if echo "$release_response" | grep -q '"id"'; then
+  echo "✅ GitHub Release created successfully: $new_tag"
+else
+  echo "⚠️  Warning: Failed to create GitHub Release"
+  echo "Response: $release_response"
+  # Don't fail the script if release creation fails
+fi
