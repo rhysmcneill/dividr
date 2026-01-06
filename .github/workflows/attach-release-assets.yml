@@ -1,0 +1,95 @@
+name: Build and Attach Release Assets
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install helper tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq zip
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.25'
+
+      - name: Build cross-platform binaries
+        run: |
+          set -eux
+          VERSION=${GITHUB_REF#refs/tags/}
+          mkdir -p dist
+
+          # linux/amd64
+          GOOS=linux GOARCH=amd64 go build -o dist/dividr-linux-amd64 ./cmd/dividr
+          tar -C dist -czf dist/dividr-${VERSION}-linux-amd64.tar.gz dist/dividr-linux-amd64
+
+          # linux/arm64
+          GOOS=linux GOARCH=arm64 go build -o dist/dividr-linux-arm64 ./cmd/dividr
+          tar -C dist -czf dist/dividr-${VERSION}-linux-arm64.tar.gz dist/dividr-linux-arm64
+
+          # darwin/amd64
+          GOOS=darwin GOARCH=amd64 go build -o dist/dividr-darwin-amd64 ./cmd/dividr
+          tar -C dist -czf dist/dividr-${VERSION}-darwin-amd64.tar.gz dist/dividr-darwin-amd64
+
+          # windows/amd64
+          GOOS=windows GOARCH=amd64 go build -o dist/dividr-windows-amd64.exe ./cmd/dividr
+          zip -j dist/dividr-${VERSION}-windows-amd64.zip dist/dividr-windows-amd64.exe
+
+      - name: Get release id for tag
+        id: get_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "Tag: $TAG"
+
+          release_json=$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/$TAG")
+          release_id=$(echo "$release_json" | jq -r '.id // empty')
+
+          if [ -z "$release_id" ]; then
+            echo "Release not found for tag $TAG, creating one..."
+            create_resp=$(curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases" -d "{\"tag_name\":\"$TAG\",\"name\":\"Release $TAG\",\"body\":\"Release $TAG\",\"draft\":false,\"prerelease\":false}")
+            release_id=$(echo "$create_resp" | jq -r '.id // empty')
+            if [ -z "$release_id" ]; then
+              echo "Failed to create release"
+              echo "$create_resp"
+              exit 1
+            fi
+          fi
+
+          echo "release_id=$release_id" >> $GITHUB_OUTPUT
+
+      - name: Upload release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RELEASE_ID: ${{ steps.get_release.outputs.release_id }}
+        run: |
+          set -eux
+          UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets"
+          for f in dist/*; do
+            name=$(basename "$f")
+            echo "Uploading $name"
+            if [[ "$f" == *.zip ]]; then
+              content_type="application/zip"
+            else
+              content_type="application/gzip"
+            fi
+            curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}" -H "Content-Type: ${content_type}" --data-binary @"$f" "${UPLOAD_URL}?name=${name}"
+          done
+
+      - name: Done
+        run: echo "Uploaded $(ls -1 dist | wc -l) assets to release"
