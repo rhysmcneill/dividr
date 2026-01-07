@@ -18,7 +18,7 @@ jobs:
       - name: Check workflow conclusion
         if: ${{ github.event.workflow_run.conclusion != 'success' }}
         run: |
-          echo "Semver workflow did not succeed, skipping."
+          echo "[INFO]: Semver workflow did not succeed, skipping."
           exit 1
 
       - name: Checkout repository
@@ -32,7 +32,7 @@ jobs:
           git fetch --tags
           LATEST_TAG=$(git describe --tags --abbrev=0)
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
-          echo "Building release assets for: $LATEST_TAG"
+          echo "[INFO]: Building release assets for: $LATEST_TAG"
 
       - name: Install helper tools
         run: |
@@ -70,6 +70,7 @@ jobs:
           GOOS=windows GOARCH=amd64 go build -o dist/dividr-windows-amd64.exe ./cmd/dividr
           cd dist && zip dividr-${VERSION}-windows-amd64.zip dividr-windows-amd64.exe && cd ..
 
+          echo "[INFO]: Release assets binaries built: $(ls -1 dist | wc -l)"
       - name: Get release id for tag
         id: get_release
         env:
@@ -77,7 +78,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           TAG=${{ steps.tag.outputs.tag }}
-          echo "Tag: $TAG"
+          echo "[INFO]: Tag: $TAG"
 
           release_json=$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/$TAG")
           release_id=$(echo "$release_json" | jq -r '.id // empty')
@@ -87,7 +88,7 @@ jobs:
             create_resp=$(curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases" -d "{\"tag_name\":\"$TAG\",\"name\":\"Release $TAG\",\"body\":\"Release $TAG\",\"draft\":false,\"prerelease\":false}")
             release_id=$(echo "$create_resp" | jq -r '.id // empty')
             if [ -z "$release_id" ]; then
-              echo "Failed to create release"
+              echo "[ERROR]: Failed to create release"
               echo "$create_resp"
               exit 1
             fi
@@ -115,4 +116,4 @@ jobs:
           done
 
       - name: Done
-        run: echo "Uploaded $(ls -1 dist | wc -l) assets to release"
+        run: echo "[INFO] Uploaded $(ls -1 dist | wc -l) assets to release"
