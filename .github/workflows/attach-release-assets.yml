@@ -1,9 +1,12 @@
 name: Build and Attach Release Assets
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_run:
+    workflows: ["Auto Semantic Version Tag"]
+    types:
+      - completed
+    branches:
+      - main
 
 jobs:
   build-and-upload:
@@ -12,8 +15,24 @@ jobs:
       contents: write
 
     steps:
+      - name: Check workflow conclusion
+        if: ${{ github.event.workflow_run.conclusion != 'success' }}
+        run: |
+          echo "Semver workflow did not succeed, skipping."
+          exit 1
+
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: tag
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Building release assets for: $LATEST_TAG"
 
       - name: Install helper tools
         run: |
@@ -28,7 +47,7 @@ jobs:
       - name: Build cross-platform binaries
         run: |
           set -eux
-          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION=${{ steps.tag.outputs.tag }}
           mkdir -p dist
 
           # linux/amd64
@@ -53,7 +72,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          TAG=${GITHUB_REF#refs/tags/}
+          TAG=${{ steps.tag.outputs.tag }}
           echo "Tag: $TAG"
 
           release_json=$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/$TAG")

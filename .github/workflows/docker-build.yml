@@ -1,9 +1,12 @@
 name: Build and Push Docker Image
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'  # Trigger only on semantic version tags (e.g., v1.0.0, v1.2.3)
+  workflow_run:
+    workflows: ["Auto Semantic Version Tag"]
+    types:
+      - completed
+    branches:
+      - main
 
 env:
   REGISTRY: ghcr.io
@@ -17,8 +20,24 @@ jobs:
       packages: write
 
     steps:
+      - name: Check workflow conclusion
+        if: ${{ github.event.workflow_run.conclusion != 'success' }}
+        run: |
+          echo "Semver workflow did not succeed, skipping."
+          exit 1
+
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: tag
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Found tag: $LATEST_TAG"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -32,9 +51,8 @@ jobs:
 
       - name: Debug tag info
         run: |
-          echo "GitHub ref: ${{ github.ref }}"
-          echo "GitHub ref name: ${{ github.ref_name }}"
-          echo "Is tag: ${{ startsWith(github.ref, 'refs/tags/') }}"
+          echo "Workflow run event from: ${{ github.event.workflow_run.name }}"
+          echo "Latest tag: ${{ steps.tag.outputs.tag }}"
 
       - name: Extract metadata (tags, labels)
         id: meta
@@ -43,11 +61,11 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             # Tag with semantic version without 'v' prefix (e.g., v1.2.3 -> 1.2.3)
-            type=semver,pattern={{version}}
+            type=semver,pattern={{version}},value=${{ steps.tag.outputs.tag }}
             # Tag with semantic version keeping 'v' prefix (e.g., v1.2.3)
-            type=semver,pattern={{raw}}
-            # Always tag latest when pushing a version tag
-            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+            type=semver,pattern={{raw}},value=${{ steps.tag.outputs.tag }}
+            # Always tag latest
+            type=raw,value=latest
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
