@@ -30,14 +30,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Debug tag info
+        run: |
+          echo "GitHub ref: ${{ github.ref }}"
+          echo "GitHub ref name: ${{ github.ref_name }}"
+          echo "Is tag: ${{ startsWith(github.ref, 'refs/tags/') }}"
+
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            # Tag with semantic version (e.g., v1.2.3)
+            # Tag with semantic version without 'v' prefix (e.g., v1.2.3 -> 1.2.3)
             type=semver,pattern={{version}}
+            # Tag with semantic version keeping 'v' prefix (e.g., v1.2.3)
+            type=semver,pattern={{raw}}
             # Always tag latest when pushing a version tag
             type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
 
@@ -56,3 +64,8 @@ jobs:
         run: |
           echo "🐳 Docker image tags:"
           echo "${{ steps.meta.outputs.tags }}"
+          echo ""
+          echo "📋 Full metadata output:"
+          echo "Tags: ${{ steps.meta.outputs.tags }}"
+          echo "Labels: ${{ steps.meta.outputs.labels }}"
+          echo "JSON: ${{ steps.meta.outputs.json }}"
