@@ -2,7 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.0.5] - 2026-01-07
+
+**Type:** PATCH
+
+### Changes
+- patch: Resolving issues with docker image tags in release management
+
+
 ## [v0.0.4] - 2026-01-07
+
+**Type:** PATCH
+
+### Changes
+- patch: Resolving issues with docker image tags in release management
+
+
+## [v0.0.5] - 2026-01-07
 
 **Type:** PATCH
 
@@ -18,7 +34,23 @@ All notable changes to this project will be documented in this file.
 - patch: Resolving CHANGELOG issues - excluding merge commits
 
 
+## [v0.0.5] - 2026-01-07
+
+**Type:** PATCH
+
+### Changes
+- patch: Resolving issues with docker image tags in release management
+
+
 ## [v0.0.4] - 2026-01-07
+
+**Type:** PATCH
+
+### Changes
+- patch: Resolving issues with docker image tags in release management
+
+
+## [v0.0.5] - 2026-01-07
 
 **Type:** PATCH
 
@@ -35,7 +67,23 @@ All notable changes to this project will be documented in this file.
 - patch: fixing semver script
 
 
+## [v0.0.5] - 2026-01-07
+
+**Type:** PATCH
+
+### Changes
+- patch: Resolving issues with docker image tags in release management
+
+
 ## [v0.0.4] - 2026-01-07
+
+**Type:** PATCH
+
+### Changes
+- patch: Resolving issues with docker image tags in release management
+
+
+## [v0.0.5] - 2026-01-07
 
 **Type:** PATCH
 
@@ -51,7 +99,23 @@ All notable changes to this project will be documented in this file.
 - patch: Resolving CHANGELOG issues - excluding merge commits
 
 
+## [v0.0.5] - 2026-01-07
+
+**Type:** PATCH
+
+### Changes
+- patch: Resolving issues with docker image tags in release management
+
+
 ## [v0.0.4] - 2026-01-07
+
+**Type:** PATCH
+
+### Changes
+- patch: Resolving issues with docker image tags in release management
+
+
+## [v0.0.5] - 2026-01-07
 
 **Type:** PATCH
 
