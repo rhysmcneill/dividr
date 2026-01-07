@@ -9,22 +9,12 @@ All notable changes to this project will be documented in this file.
 ### Changes
 - patch: Updating CHANGELOG management in release CI
 
-
 ## [v0.0.9] - 2026-01-07
 
 **Type:** PATCH
 
 ### Changes
 - patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
 
 ## [v0.0.8] - 2026-01-07
 
@@ -32,31 +22,6 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 - patch: Resolving issues with CHANGELOG duplication
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
 
 ## [v0.0.7] - 2026-01-07
 
@@ -64,62 +29,6 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 - patch: Resolving issues with CI
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.8] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Resolving issues with CHANGELOG duplication
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
 
 ## [v0.0.6] - 2026-01-07
 
@@ -129,124 +38,12 @@ All notable changes to this project will be documented in this file.
 - patch: Resolving issues with CI
 - patch: Resolving issues with release artifact build and attachment
 
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.8] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Resolving issues with CHANGELOG duplication
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
 ## [v0.0.5] - 2026-01-07
 
 **Type:** PATCH
 
 ### Changes
 - patch: Resolving issues with docker image tags in release management
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.8] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Resolving issues with CHANGELOG duplication
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
 
 ## [v0.0.4] - 2026-01-07
 
@@ -255,62 +52,6 @@ All notable changes to this project will be documented in this file.
 ### Changes
 - patch: Resolving issues with docker image tags in release management
 
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.8] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Resolving issues with CHANGELOG duplication
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
 ## [v0.0.3] - 2026-01-06
 
 **Type:** PATCH
@@ -318,124 +59,12 @@ All notable changes to this project will be documented in this file.
 ### Changes
 - patch: Resolving CHANGELOG issues - excluding merge commits
 
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.8] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Resolving issues with CHANGELOG duplication
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
 ## [v0.0.2] - 2026-01-06
 
 **Type:** PATCH
 
 ### Changes
 - patch: fixing semver script
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.8] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Resolving issues with CHANGELOG duplication
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
-
-## [v0.0.9] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Adding logging to release asset CI
-
-
-## [v0.0.10] - 2026-01-07
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating CHANGELOG management in release CI
-
 
 ## [v0.0.1] - 2026-01-06
 
