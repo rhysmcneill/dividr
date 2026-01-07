@@ -77,20 +77,21 @@ $commit_messages
   # Create initial GitHub Release
   echo "Creating initial GitHub Release for $new_tag"
 
-  release_response=$(curl -X POST \
+  release_response=$(jq -n \
+    --arg tag "$new_tag" \
+    --arg name "Release $new_tag" \
+    --arg body "## Initial Release\n\n$commit_messages" \
+    '{
+      tag_name: $tag,
+      name: $name,
+      body: $body,
+      draft: false,
+      prerelease: false
+    }' | curl -X POST \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases" \
-    -d @- << EOF
-{
-  "tag_name": "$new_tag",
-  "name": "Release $new_tag",
-  "body": "## Initial Release\n\n$commit_messages",
-  "draft": false,
-  "prerelease": false
-}
-EOF
-)
+    -d @-)
 
   if echo "$release_response" | grep -q '"id"'; then
     echo "GitHub Release created successfully: $new_tag"
@@ -230,21 +231,22 @@ changelog_body=$(awk -v tag="$new_tag" '
   found { print }
 ' "$changelog_file")
 
-# Create release using GitHub API
-release_response=$(curl -X POST \
+# Create release using GitHub API with proper JSON encoding
+release_response=$(jq -n \
+  --arg tag "$new_tag" \
+  --arg name "Release $new_tag" \
+  --arg body "$changelog_body" \
+  '{
+    tag_name: $tag,
+    name: $name,
+    body: $body,
+    draft: false,
+    prerelease: false
+  }' | curl -X POST \
   -H "Authorization: token ${GITHUB_TOKEN}" \
   -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases" \
-  -d @- << EOF
-{
-  "tag_name": "$new_tag",
-  "name": "Release $new_tag",
-  "body": "$changelog_body",
-  "draft": false,
-  "prerelease": false
-}
-EOF
-)
+  -d @-)
 
 if echo "$release_response" | grep -q '"id"'; then
   echo "✅ GitHub Release created successfully: $new_tag"
