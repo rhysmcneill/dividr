@@ -14,7 +14,7 @@ GITHUB_TOKEN=${GITHUB_TOKEN:-}
 GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-$(git config --get remote.origin.url | sed -E 's|.*/(.*)\.git$|\1|')}
 
 if [ -z "$GITHUB_TOKEN" ]; then
-  echo "GITHUB_TOKEN not set; exiting (script intended for CI)."
+  echo "[ERROR]: GITHUB_TOKEN not set; exiting (script intended for CI)."
   exit 1
 fi
 
@@ -23,10 +23,10 @@ git fetch --tags --prune
 
 last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 if [ -z "$last_tag" ]; then
-  echo "No tags found in repository. Creating initial tag v0.0.1"
+  echo "[INFO]: No tags found in repository. Creating initial tag v0.0.1"
   # For the very first tag, check if there are any commits at all
   if ! git rev-parse HEAD >/dev/null 2>&1; then
-    echo "Error: No commits in repository"
+    echo "[ERROR]: No commits in repository"
     exit 1
   fi
   # Create initial tag and exit
@@ -72,10 +72,10 @@ $commit_messages
   git push "$remote_repo" HEAD:main
   git push "$remote_repo" "$new_tag"
 
-  echo "Initial tag created and pushed: $new_tag"
+  echo "[INFO]: Initial tag created and pushed: $new_tag"
 
   # Create initial GitHub Release
-  echo "Creating initial GitHub Release for $new_tag"
+  echo "[INFO]: Creating initial GitHub Release for $new_tag"
 
   release_response=$(jq -n \
     --arg tag "$new_tag" \
@@ -94,9 +94,9 @@ $commit_messages
     -d @-)
 
   if echo "$release_response" | grep -q '"id"'; then
-    echo "GitHub Release created successfully: $new_tag"
+    echo "[INFO]: GitHub Release created successfully: $new_tag"
   else
-    echo "Warning: Failed to create GitHub Release"
+    echo "[ERROR]: Failed to create GitHub Release"
     echo "Response: $release_response"
   fi
 
@@ -107,13 +107,13 @@ echo "Last tag: $last_tag"
 
 # Validate that the tag actually exists in git history
 if ! git rev-parse "$last_tag" >/dev/null 2>&1; then
-  echo "Error: Tag $last_tag does not exist in git history"
+  echo "[ERROR]: Tag $last_tag does not exist in git history"
   exit 1
 fi
 
 commits=$(git log --no-merges --pretty=%B "$last_tag"..HEAD)
 if [ -z "$commits" ]; then
-  echo "No new commits since $last_tag; nothing to do."
+  echo "[INFO]: No new commits since $last_tag; nothing to do."
   exit 0
 fi
 
@@ -130,7 +130,7 @@ elif echo "$commits" | grep -qi "^patch:"; then
 fi
 
 if [ "$bump" = "none" ]; then
-  echo "No semver-relevant commits found; nothing to do."
+  echo "[INFO]: No semver-relevant commits found; nothing to do."
   exit 0
 fi
 
@@ -186,18 +186,22 @@ $commit_messages
 
 "
 
-# Insert at the top of the changelog (after the header)
-temp_file=$(mktemp)
-if grep -q "^## \[" "$changelog_file"; then
-  # Insert before first version entry
-  awk -v entry="$changelog_entry" '/^## \[/{print entry; found=1} {print}' "$changelog_file" > "$temp_file"
+# Check if this version already exists in the changelog
+if grep -q "^## \[$new_tag\]" "$changelog_file"; then
+  echo "[WARN]: $new_tag already exists in CHANGELOG.md, skipping changelog update"
 else
-  # No version entries yet, append after header
-  awk -v entry="$changelog_entry" '1; /^All notable changes/{print ""; print entry}' "$changelog_file" > "$temp_file"
+  # Insert at the top of the changelog (after the header)
+  temp_file=$(mktemp)
+  if grep -q "^## \[" "$changelog_file"; then
+    # Insert before first version entry
+    awk -v entry="$changelog_entry" '/^## \[/{print entry; found=1} {print}' "$changelog_file" > "$temp_file"
+  else
+    # No version entries yet, append after header
+    awk -v entry="$changelog_entry" '1; /^All notable changes/{print ""; print entry}' "$changelog_file" > "$temp_file"
+  fi
+  mv "$temp_file" "$changelog_file"
+  echo "[INFO]:Updated CHANGELOG.md"
 fi
-mv "$temp_file" "$changelog_file"
-
-echo "Updated CHANGELOG.md"
 
 # Create annotated tag and push it
 git config user.name "github-actions[bot]"
@@ -216,10 +220,10 @@ echo "Pushing changelog commit and tag to $remote_repo"
 git push "$remote_repo" HEAD:main
 git push "$remote_repo" "$new_tag"
 
-echo "Changelog updated and tag pushed: $new_tag"
+echo "[INFO]: Changelog updated and tag pushed: $new_tag"
 
 # Create GitHub Release
-echo "Creating GitHub Release for $new_tag"
+echo "[INFO]: Creating GitHub Release for $new_tag"
 
 # Extract the changelog entry for this version
 changelog_body=$(awk -v tag="$new_tag" '
@@ -249,9 +253,9 @@ release_response=$(jq -n \
   -d @-)
 
 if echo "$release_response" | grep -q '"id"'; then
-  echo "✅ GitHub Release created successfully: $new_tag"
+  echo "[INFO]: ✅ GitHub Release created successfully: $new_tag"
 else
-  echo "⚠️  Warning: Failed to create GitHub Release"
+  echo "[ERROR]: ⚠️ Failed to create GitHub Release"
   echo "Response: $release_response"
   # Don't fail the script if release creation fails
 fi
