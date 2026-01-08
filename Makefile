@@ -7,8 +7,12 @@ MIGRATE ?= migrate
 SQLC ?= sqlc
 TEMPL ?= templ
 
+# Database configuration - reads password from secret file
+DB_PASSWORD := $(shell cat docker/secrets/db_password.txt 2>/dev/null || echo "")
+DATABASE_URL ?= postgres://dividr:$(DB_PASSWORD)@localhost:5432/dividr?sslmode=disable
+
 # Phony targets (not real files)
-.PHONY: all build dev test lint tidy fmt vet run clean frontend docker migrate-up sqlc generate
+.PHONY: all build dev test lint tidy fmt vet run clean frontend docker migrate-create migrate-up migrate-down migrate-force docker-build docker-clean generate sqlc
 
 # Default target
 all: build
@@ -42,11 +46,30 @@ lint:
 docker:
 	docker build -t $(DOCKER_TAG) .
 
+# --- Database Migrations ---
+
+## migrate-create: Create a new migration file. Usage: make migrate-create name=init_schema
+migrate-create:
+	@echo "Creating migration files for: $(name)..."
+	$(MIGRATE) create -ext sql -dir ./internal/database/migrations -seq $(name)
+
+## migrate-up: Apply all up migrations
 migrate-up:
-	$(MIGRATE) -path ./migrations -database $(DATABASE_URL) up
+	@echo "Applying migrations..."
+	$(MIGRATE) -path ./internal/database/migrations -database "$(DATABASE_URL)" up
+
+## migrate-down: Rollback the last migration step
+migrate-down:
+	@echo "Rolling back last migration..."
+	$(MIGRATE) -path ./internal/database/migrations -database "$(DATABASE_URL)" down 1
+
+## migrate-force: Fix dirty state (use if migration fails and locks the DB). Usage: make migrate-force version=1
+migrate-force:
+	@echo "Forcing migration version $(version)..."
+	$(MIGRATE) -path ./internal/database/migrations -database "$(DATABASE_URL)" force $(version)
 
 sqlc:
-	$(SQLC) generate
+	cd internal/database && $(SQLC) generate
 
 tidy:
 	go mod tidy

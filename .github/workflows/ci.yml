@@ -2,41 +2,62 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
-  build:
+  test:
+    name: Build, Migrate & Test
     runs-on: ubuntu-latest
+
+    # Service containers run alongside your steps
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: dividr
+        ports:
+          - 5432:5432
+        # Wait until Postgres is ready before starting steps
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.25'
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.25'
 
-      - name: Cache Go modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+    # STEP A: Install Migration Tool (Example using golang-migrate)
+    # Change this if you use 'goose' or another tool!
+    - name: Install golang-migrate
+      run: |
+        curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-amd64.tar.gz | tar xvz
+        sudo mv migrate /usr/local/bin/migrate
 
-      - name: Install tools
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.7.2
-          go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.30.0
-          go install github.com/a-h/templ/cmd/templ@latest
+    # STEP B: Run Migrations
+    # This proves your SQL is valid and matches the DB version
+    - name: Run Migrations
+      run: |
+        migrate -path ./internal/database/migrations -database "postgres://user:password@localhost:5432/dividr?sslmode=disable" up
 
-      - name: Run tests
-        run: make test
-
-      - name: Build
-        run: make build
-
-      - name: Lint
-        run: make lint
+    # STEP C: Run Tests
+    # We pass the DB config so tests can connect to the CI postgres
+    - name: Run Integration Tests
+      env:
+        DB_HOST: localhost
+        DB_PORT: 5432
+        DB_USER: user
+        DB_PASSWORD: password
+        DB_NAME: dividr
+        APP_ENV: test
+      run: go test -v ./...

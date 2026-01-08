@@ -6,8 +6,9 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rhysmcneill/dividr/internal/errs"
-	mw "github.com/rhysmcneill/dividr/internal/middleware"
+	_ "github.com/rhysmcneill/dividr/internal/http/middleware"
 	"github.com/rhysmcneill/dividr/internal/ui/components"
 )
 
@@ -40,7 +41,7 @@ func HTMX(w http.ResponseWriter, r *http.Request, component templ.Component, hea
 
 // logError is a private helper that focuses ONLY on logging
 func logError(r *http.Request, e *errs.AppError) {
-	reqID, _ := r.Context().Value(mw.RequestIDKey).(string)
+	reqID, _ := r.Context().Value(middleware.RequestIDKey).(string)
 
 	// Create the logger with context
 	log := slog.With(
