@@ -48,7 +48,7 @@ jobs:
     # This proves your SQL is valid and matches the DB version
     - name: Run Migrations
       run: |
-        migrate -path ./migrations -database "postgres://user:password@localhost:5432/dividr?sslmode=disable" up
+        migrate -path ./internal/database/migrations -database "postgres://user:password@localhost:5432/dividr?sslmode=disable" up
 
     # STEP C: Run Tests
     # We pass the DB config so tests can connect to the CI postgres
