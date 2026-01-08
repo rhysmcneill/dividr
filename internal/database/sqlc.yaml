@@ -1,0 +1,19 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    # Where your SQL files live
+    queries: "queries"
+    # Where your database structure is defined
+    schema: "migrations"
+    gen:
+      go:
+        # The package name for the generated code
+        package: "database"
+        # Where to save the generated Go files (. = current directory since we run from internal/database)
+        out: "."
+        # Use the modern, high-performance pgx driver
+        sql_package: "pgx/v5"
+        # Add JSON tags to structs (useful for simple APIs)
+        emit_json_tags: true
+        # Create an interface (CRITICAL for unit testing later)
+        emit_interface: true
