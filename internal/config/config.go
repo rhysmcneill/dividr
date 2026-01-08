@@ -4,16 +4,21 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	AppEnv      string
-	Port        string
-	DatabaseURL string
-	LogLevel    string
+	AppEnv        string
+	Port          string
+	DatabaseURL   string
+	LogLevel      string
+	DBMaxConns    int           // Default: 10
+	DBMinConns    int           // Default: 2
+	DBMaxConnIdle time.Duration // Default: 30 minutes
 }
 
 func Load() *Config {
@@ -24,10 +29,13 @@ func Load() *Config {
 	}
 
 	return &Config{
-		AppEnv:      getEnv("APP_ENV", "dev"),
-		Port:        getEnv("PORT", "8080"),
-		DatabaseURL: buildDatabaseURL(),
-		LogLevel:    getEnv("LOG_LEVEL", "debug"),
+		AppEnv:        getEnv("APP_ENV", "dev"),
+		Port:          getEnv("PORT", "8080"),
+		DatabaseURL:   buildDatabaseURL(),
+		LogLevel:      getEnv("LOG_LEVEL", "debug"),
+		DBMaxConns:    getEnvInt("DB_MAX_CONNS", 10),
+		DBMinConns:    getEnvInt("DB_MIN_CONNS", 2),
+		DBMaxConnIdle: getEnvDuration("DB_MAX_CONN_IDLE", 30*time.Minute),
 	}
 }
 
@@ -79,4 +87,24 @@ func getPassword() string {
 	// Fallback to env var
 	slog.Info("database password loaded from environment variable")
 	return getEnv("DB_PASSWORD", "dividr")
+}
+
+// getEnvInt reads an integer from env or returns default
+func getEnvInt(key string, defaultVal int) int {
+	if v, exists := os.LookupEnv(key); exists {
+		if i, err := strconv.Atoi(v); err == nil {
+			return i
+		}
+	}
+	return defaultVal
+}
+
+// getEnvDuration reads a duration from env or returns default
+func getEnvDuration(key string, defaultVal time.Duration) time.Duration {
+	if v, exists := os.LookupEnv(key); exists {
+		if d, err := time.ParseDuration(v); err == nil {
+			return d
+		}
+	}
+	return defaultVal
 }

@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS audit_events;
+DROP TABLE IF EXISTS receipts;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS transaction_import_batches;
+DROP TABLE IF EXISTS mapping_profiles;
+DROP TABLE IF EXISTS oauth_tokens;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS users;
+DROP EXTENSION IF EXISTS "uuid-ossp";

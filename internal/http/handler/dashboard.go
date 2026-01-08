@@ -1,2 +1,2 @@
 // This will be used for dashboard related handlers
-package handlers
+package handler
