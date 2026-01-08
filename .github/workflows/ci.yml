@@ -37,20 +37,39 @@ jobs:
       with:
         go-version: '1.25'
 
-    # STEP A: Install Migration Tool (Example using golang-migrate)
+    # Install sqlc forTempl for template generation
+    - name: Install templ
+      run: go install github.com/a-h/templ/cmd/templ@latest
+
+    # STEP B: Install  type-safe query generation
+    - name: Install sqlc
+      run: go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+
+    # Generate SQLC code and verify it's committed
+    - name: Generate SQLC code
+      run: make sqlc
+
+    - name: Verify SQLC generation is committed
+      run: |
+        if [[ -n $(git status --porcelain internal/database) ]]; then
+          echo "[ERROR]: SQLC generated files have uncommitted changes."
+          echo "[INFO]: Please run 'make sqlc' locally and commit the generated files."
+          exit 1
+        fi
+
     # Change this if you use 'goose' or another tool!
     - name: Install golang-migrate
       run: |
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-amd64.tar.gz | tar xvz
         sudo mv migrate /usr/local/bin/migrate
 
-    # STEP B: Run Migrations
+    # STEP C: Run Migrations
     # This proves your SQL is valid and matches the DB version
     - name: Run Migrations
       run: |
         migrate -path ./internal/database/migrations -database "postgres://user:password@localhost:5432/dividr?sslmode=disable" up
 
-    # STEP C: Run Tests
+    # STEP D: Run Tests
     # We pass the DB config so tests can connect to the CI postgres
     - name: Run Integration Tests
       env:
