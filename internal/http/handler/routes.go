@@ -8,25 +8,49 @@ import (
 
 // RegisterRoutes sets up the router and all endpoints
 func (h *Handler) RegisterRoutes() *chi.Mux {
-	// Create a new router
 	r := chi.NewRouter()
 
-	// Middleware
-	r.Use(middleware.Recoverer)
-	r.Use(mw.Logger)
+	// Global Middleware (applied in order)
+	r.Use(mw.RecoverPanic)      // Catch panics and log stack traces
+	r.Use(middleware.RequestID) // Add chi's request ID to context
+	r.Use(mw.Logger)            // Log requests with request ID correlation
+	r.Use(mw.SecureHeaders)     // Add security headers
 
-	// 1. Global Middleware
-	r.Use(middleware.Recoverer)
-	r.Use(middleware.RequestID)
-	// r.Use(customMiddleware.Cors) - add later
+	// --- Public Routes ---
+	r.HandleFunc("GET /health", h.handleDBHealth) // Basic connectivity check
 
-	// 2. The Routes
-	r.Get("/health", h.Health)
+	// --- API V1 Routes ---
+	r.Route("/api/v1", func(r chi.Router) {
 
-	// Future routes will go here:
-	// r.Get("/login", h.LoginPage)
-	// r.Post("/login", h.LoginSubmit)
-	// r.Get("/dashboard", h.Dashboard)
+		// Public API Routes
+		r.Get("/health", h.handleHealth)
+		// r.Get("/login", h.LoginPage)
+		// r.Post("/login", h.LoginSubmit)
+
+		// // Private API routes
+		r.Group(func(r chi.Router) {
+			// r.Use(h.RequireToken) // <--- THIS is what makes it private later
+
+			// r.HandleFunc("GET /", h.handleHome)
+			// r.Get("/me", h.handleGetProfile)
+			// r.Get("/dashboard", h.Dashboard)
+
+		})
+	})
+
+	// The App (Strictly Private routes - Requires Session)
+	r.Route("/app", func(r chi.Router) {
+		// FUTURE: r.Use(AuthMiddleware)
+		// FUTURE: r.Use(h.RequireSession)
+		// TODO: r.Get("/dashboard",  h.handleDashboard)
+	})
+
+	// C. HX Group (Fragments Only - Requires Session Later)
+	r.Route("/hx", func(r chi.Router) {
+		// FUTURE: r.Use(AuthMiddleware)
+		// FUTURE: r.Use(h.RequireSession)
+		// TODO: r.Get("/summary", h.handleHXSummary)
+	})
 
 	return r
 }
