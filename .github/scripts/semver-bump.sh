@@ -161,6 +161,12 @@ new_tag="v${major}.${minor}.${patch}"
 
 echo "Bump type: $bump -> New tag: $new_tag"
 
+# CRITICAL: Check if this tag already exists (prevents duplicate releases)
+if git rev-parse "$new_tag" >/dev/null 2>&1; then
+  echo "[WARN]: Tag $new_tag already exists in repository, skipping release"
+  exit 0
+fi
+
 # Update CHANGELOG.md
 changelog_file="CHANGELOG.md"
 if [ ! -f "$changelog_file" ]; then
@@ -186,28 +192,24 @@ $commit_messages
 
 "
 
-# Pull latest main to ensure we have the most up-to-date CHANGELOG
-echo "[INFO]: Fetching latest main to check for duplicate changelog entries"
-git fetch origin main
-git checkout -B main origin/main
-
-# Check if this version already exists in the changelog
+# Check if this version already exists in the changelog (additional safety check)
 if grep -q "^## \[$new_tag\]" "$changelog_file"; then
-  echo "[WARN]: $new_tag already exists in CHANGELOG.md, skipping changelog update and tagging"
+  echo "[WARN]: $new_tag already exists in CHANGELOG.md but tag doesn't exist - this is inconsistent!"
+  echo "[INFO]: Cleaning up and exiting to prevent duplicates"
   exit 0
-else
-  # Insert at the top of the changelog (after the header)
-  temp_file=$(mktemp)
-  if grep -q "^## \[" "$changelog_file"; then
-    # Insert before first version entry
-    awk -v entry="$changelog_entry" '/^## \[/{print entry; found=1} {print}' "$changelog_file" > "$temp_file"
-  else
-    # No version entries yet, append after header
-    awk -v entry="$changelog_entry" '1; /^All notable changes/{print ""; print entry}' "$changelog_file" > "$temp_file"
-  fi
-  mv "$temp_file" "$changelog_file"
-  echo "[INFO]:Updated CHANGELOG.md"
 fi
+
+# Insert at the top of the changelog (after the header)
+temp_file=$(mktemp)
+if grep -q "^## \[" "$changelog_file"; then
+  # Insert before first version entry
+  awk -v entry="$changelog_entry" '/^## \[/{if(!found){print entry; found=1}} {print}' "$changelog_file" > "$temp_file"
+else
+  # No version entries yet, append after header
+  awk -v entry="$changelog_entry" '1; /^All notable changes/{print ""; print entry}' "$changelog_file" > "$temp_file"
+fi
+mv "$temp_file" "$changelog_file"
+echo "[INFO]: Updated CHANGELOG.md"
 
 # Create annotated tag and push it
 git config user.name "github-actions[bot]"
