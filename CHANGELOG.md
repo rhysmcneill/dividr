@@ -9,6 +9,13 @@ All notable changes to this project will be documented in this file.
 ### Changes
 - patch: solving duplication in CHANGELOG via semver.sh
 
+## [v0.2.1] - 2026-01-09
+
+**Type:** PATCH
+
+### Changes
+- fix: Fixing semver script to check if there are duplicates in the CHANGELOG.md
+- patch: Resolving app version var injection at build time
 
 ## [v0.2.0] - 2026-01-09
 
