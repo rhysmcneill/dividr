@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.2.2] - 2026-01-09
+
+**Type:** PATCH
+
+### Changes
+- patch: solving duplication in CHANGELOG via semver.sh
+
+
 ## [v0.2.0] - 2026-01-09
 
 **Type:** MINOR
