@@ -186,9 +186,15 @@ $commit_messages
 
 "
 
+# Pull latest main to ensure we have the most up-to-date CHANGELOG
+echo "[INFO]: Fetching latest main to check for duplicate changelog entries"
+git fetch origin main
+git checkout -B main origin/main
+
 # Check if this version already exists in the changelog
 if grep -q "^## \[$new_tag\]" "$changelog_file"; then
-  echo "[WARN]: $new_tag already exists in CHANGELOG.md, skipping changelog update"
+  echo "[WARN]: $new_tag already exists in CHANGELOG.md, skipping changelog update and tagging"
+  exit 0
 else
   # Insert at the top of the changelog (after the header)
   temp_file=$(mktemp)

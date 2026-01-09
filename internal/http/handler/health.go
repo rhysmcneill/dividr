@@ -25,7 +25,7 @@ func (h *Handler) handleHealth(w http.ResponseWriter, r *http.Request) {
 	dbHealth := h.DB.Health() // Returns map[string]string
 
 	// 2. Determine overall system status
-	systemStatus := "available"
+	systemStatus := "up"
 	statusCode := http.StatusOK
 
 	if dbHealth["status"] != "up" {

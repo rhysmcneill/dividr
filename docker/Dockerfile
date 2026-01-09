@@ -1,10 +1,14 @@
 ARG GO_VERSION=1.25
+ARG VERSION=dev
 
 # ==============================================================================
 # STAGE 1: The Builder
 # Use a full Go image to compile the application and generate templates.
 # ==============================================================================
 FROM golang:${GO_VERSION}-alpine AS builder
+
+# Pass VERSION arg to builder stage
+ARG VERSION
 
 # 1. Install system dependencies
 # 'git' is often needed for go mod download.
@@ -31,11 +35,11 @@ COPY . .
 RUN templ generate
 
 # 6. Build the Binary
-# Fetch version from git tags at build time and strip 'v' prefix
 # -ldflags="-w -s" strips debug information to reduce binary size
-# -X injects the version at build time from git tags
-RUN VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "dev") && \
-    VERSION=${VERSION#v} && \
+# -X injects the version at build time (from build arg or git tags as fallback)
+RUN if [ "$VERSION" = "dev" ]; then \
+      VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "dev"); \
+    fi && \
     CGO_ENABLED=0 GOOS=linux go build \
     -ldflags="-w -s -X 'github.com/rhysmcneill/dividr/internal/http/handler.Version=${VERSION}'" \
     -o ./bin/dividr ./cmd/dividr
