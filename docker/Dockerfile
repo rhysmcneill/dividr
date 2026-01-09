@@ -31,8 +31,14 @@ COPY . .
 RUN templ generate
 
 # 6. Build the Binary
+# Fetch version from git tags at build time and strip 'v' prefix
 # -ldflags="-w -s" strips debug information to reduce binary size
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o ./bin/dividr ./cmd/dividr
+# -X injects the version at build time from git tags
+RUN VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "dev") && \
+    VERSION=${VERSION#v} && \
+    CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-w -s -X 'github.com/rhysmcneill/dividr/internal/http/handler.Version=${VERSION}'" \
+    -o ./bin/dividr ./cmd/dividr
 
 # ==============================================================================
 # STAGE 2: The Runner (Production)

@@ -6,6 +6,7 @@ GOLANGCI_LINT ?= golangci-lint
 MIGRATE ?= migrate
 SQLC ?= sqlc
 TEMPL ?= templ
+VERSION ?= dev
 
 # Database configuration - reads password from secret file
 DB_PASSWORD := $(shell cat docker/secrets/db_password.txt 2>/dev/null || echo "")
@@ -26,9 +27,9 @@ generate:
 
 # 2. BUILD: Depends on 'generate' so code exists before compilation
 build: generate
-	@echo "Building binary..."
+	@echo "Building binary (version: $(VERSION))..."
 	@mkdir -p $(dir $(BINARY))
-	go build -o $(BINARY) $(CMD)
+	go build -ldflags "-X 'github.com/rhysmcneill/dividr/internal/http/handler.Version=$(VERSION)'" -o $(BINARY) $(CMD)
 
 # 3. DEV: Using 'air' is recommended for live reloading Templ changes.
 # If you don't use air, this runs generate then go run.

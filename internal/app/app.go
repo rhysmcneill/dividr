@@ -27,7 +27,7 @@ func Run() error {
 	}
 	defer db.Close()
 
-	h := handler.New(db)
+	h := handler.New(db, cfg)
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", cfg.Port),
@@ -46,7 +46,7 @@ func Run() error {
 		slog.Info("Starting server", "port", cfg.Port)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			slog.Error("Fatal Server error", "error", err)
-			quit <- syscall.SIGTERM // <--- THIS
+			quit <- syscall.SIGTERM // Trigger shutdown on fatal error
 		}
 	}()
 
