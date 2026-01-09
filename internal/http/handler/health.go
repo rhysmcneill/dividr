@@ -3,24 +3,48 @@ package handler
 import (
 	"net/http"
 
-	"github.com/rhysmcneill/dividr/internal/database"
-	"github.com/rhysmcneill/dividr/internal/http/response" // Import the toolkit
+	"github.com/rhysmcneill/dividr/internal/http/json"
+	// Import the toolkit
 )
 
-// The Handler struct holds your dependencies
-type Handler struct {
-	DB *database.Service
-}
+// Version can be injected at build time
+var Version = "X.Y.Z"
 
-func New(db *database.Service) *Handler {
-	return &Handler{DB: db}
-}
-
-// The methods use the response toolkit
-func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
-	// 1. Do logic using h.DB
+// The method is used for public health checks
+func (h *Handler) handleDBHealth(w http.ResponseWriter, r *http.Request) {
 	data := h.DB.Health()
+	// Use the json helper we created
+	if err := json.Encode(w, http.StatusOK, data); err != nil {
+		h.respondWithError(w, r, err)
+	}
+}
 
-	// 2. Use the toolkit to reply
-	response.JSON(w, http.StatusOK, data)
+// The method is used for authenticated health checks
+func (h *Handler) handleHealth(w http.ResponseWriter, r *http.Request) {
+	// 1. Get DB Health
+	dbHealth := h.DB.Health() // Returns map[string]string
+
+	// 2. Determine overall system status
+	systemStatus := "available"
+	statusCode := http.StatusOK
+
+	if dbHealth["status"] != "up" {
+		systemStatus = "unavailable"
+		statusCode = http.StatusServiceUnavailable
+	}
+
+	// 3. Construct Response
+	response := map[string]any{
+		"status":      systemStatus,
+		"environment": h.Config.AppEnv,
+		"version":     Version,
+		"components": map[string]any{
+			"database": dbHealth,
+		},
+	}
+
+	// 4. Send
+	if err := json.Encode(w, statusCode, response); err != nil {
+		h.respondWithError(w, r, err)
+	}
 }

@@ -48,26 +48,27 @@ jobs:
         run: |
           set -eux
           VERSION=${{ steps.tag.outputs.tag }}
+          LDFLAGS="-X 'github.com/rhysmcneill/dividr/internal/http/handler.Version=${VERSION}'"
           mkdir -p dist
 
           # linux/amd64
-          GOOS=linux GOARCH=amd64 go build -o dist/dividr-linux-amd64 ./cmd/dividr
+          GOOS=linux GOARCH=amd64 go build -ldflags "${LDFLAGS}" -o dist/dividr-linux-amd64 ./cmd/dividr
           tar -czf dist/dividr-${VERSION}-linux-amd64.tar.gz -C dist dividr-linux-amd64
 
           # linux/arm64
-          GOOS=linux GOARCH=arm64 go build -o dist/dividr-linux-arm64 ./cmd/dividr
+          GOOS=linux GOARCH=arm64 go build -ldflags "${LDFLAGS}" -o dist/dividr-linux-arm64 ./cmd/dividr
           tar -czf dist/dividr-${VERSION}-linux-arm64.tar.gz -C dist dividr-linux-arm64
 
           # darwin/amd64
-          GOOS=darwin GOARCH=amd64 go build -o dist/dividr-darwin-amd64 ./cmd/dividr
+          GOOS=darwin GOARCH=amd64 go build -ldflags "${LDFLAGS}" -o dist/dividr-darwin-amd64 ./cmd/dividr
           tar -czf dist/dividr-${VERSION}-darwin-amd64.tar.gz -C dist dividr-darwin-amd64
 
           # darwin/arm64 (Apple Silicon)
-          GOOS=darwin GOARCH=arm64 go build -o dist/dividr-darwin-arm64 ./cmd/dividr
+          GOOS=darwin GOARCH=arm64 go build -ldflags "${LDFLAGS}" -o dist/dividr-darwin-arm64 ./cmd/dividr
           tar -czf dist/dividr-${VERSION}-darwin-arm64.tar.gz -C dist dividr-darwin-arm64
 
           # windows/amd64
-          GOOS=windows GOARCH=amd64 go build -o dist/dividr-windows-amd64.exe ./cmd/dividr
+          GOOS=windows GOARCH=amd64 go build -ldflags "${LDFLAGS}" -o dist/dividr-windows-amd64.exe ./cmd/dividr
           cd dist && zip dividr-${VERSION}-windows-amd64.zip dividr-windows-amd64.exe && cd ..
 
           echo "[INFO]: Release assets binaries built: $(ls -1 dist | wc -l)"
