@@ -1,0 +1,24 @@
+package components
+
+// Button Component
+// We pass attributes so we can add HTMX triggers to it dynamically
+templ Button(text string, attrs templ.Attributes, isPrimary bool) {
+	if isPrimary {
+		<button { attrs... } class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+			{ text }
+		</button>
+	} else {
+		<button { attrs... } class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+			{ text }
+		</button>
+	}
+}
+
+// Card Component
+templ Card() {
+	<div class="overflow-hidden rounded-lg bg-white shadow ring-1 ring-gray-900/5">
+		<div class="px-4 py-5 sm:p-6">
+			{ children... }
+		</div>
+	</div>
+}

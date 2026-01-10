@@ -1,0 +1,31 @@
+package pages
+
+import (
+	"github.com/rhysmcneill/dividr/web/templates/layouts"
+	"github.com/rhysmcneill/dividr/web/templates/components"
+)
+
+templ Dashboard() {
+	@layouts.Base("Dashboard") {
+		<div class="py-10">
+			<header>
+				<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+					<h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">Dashboard</h1>
+				</div>
+			</header>
+			<main>
+				<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+					@components.Card() {
+						<h3 class="text-base font-semibold leading-6 text-gray-900">Connect HMRC</h3>
+						<div class="mt-2 max-w-xl text-sm text-gray-500">
+							<p>Import your tax details directly to get started.</p>
+						</div>
+						<div class="mt-5">
+							@components.Button("Connect Now", nil, true)
+						</div>
+					}
+				</div>
+			</main>
+		</div>
+	}
+}
