@@ -26,6 +26,16 @@ func RecoverPanic(next http.Handler) http.Handler {
 	})
 }
 
+// CacheControl sets the Cache-Control header.
+// Used for static assets.
+func CacheControl(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set aggressive caching (1 year)
+		w.Header().Set("Cache-Control", "public, max-age=31536000")
+		next.ServeHTTP(w, r)
+	})
+}
+
 // SecureHeaders adds security headers to every response
 func SecureHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
