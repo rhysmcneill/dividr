@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.3.0] - 2026-01-10
+
+**Type:** MINOR
+
+### Changes
+- minor: Integrating tailwindcss, basic templ pages, base and components. Added all required routes, handlers - dashboard and landing are configured. Release build process updated to include tailwindcss.
+- chore: updating v0.2.1 entry in changelog
+
+
 ## [v0.2.2] - 2026-01-09
 
 **Type:** PATCH
