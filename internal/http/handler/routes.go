@@ -1,9 +1,14 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/rhysmcneill/dividr/internal/http/handler/render"
 	mw "github.com/rhysmcneill/dividr/internal/http/middleware"
+	"github.com/rhysmcneill/dividr/web"
+	"github.com/rhysmcneill/dividr/web/templates/pages"
 )
 
 // RegisterRoutes sets up the router and all endpoints
@@ -16,8 +21,19 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 	r.Use(mw.Logger)            // Log requests with request ID correlation
 	r.Use(mw.SecureHeaders)     // Add security headers
 
+	// --- Static Files ---
+	fs := http.FileServer(http.FS(web.Files))
+	r.With(mw.CacheControl).Get("/static/*", func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	})
+
+	// --- Error Pages ---
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		_ = render.Component(w, r, http.StatusNotFound, pages.NotFound())
+	})
 	// --- Public Routes ---
 	r.HandleFunc("GET /health", h.handleDBHealth) // Basic connectivity check
+	r.Get("/", h.handleLanding)                   // Landing Page
 
 	// --- API V1 Routes ---
 	r.Route("/api/v1", func(r chi.Router) {
@@ -26,12 +42,10 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 		r.Get("/health", h.handleHealth)
 		// r.Get("/login", h.LoginPage)
 		// r.Post("/login", h.LoginSubmit)
-
-		// // Private API routes
+		// Private API routes
 		r.Group(func(r chi.Router) {
 			// r.Use(h.RequireToken) // <--- THIS is what makes it private later
 
-			// r.HandleFunc("GET /", h.handleHome)
 			// r.Get("/me", h.handleGetProfile)
 			// r.Get("/dashboard", h.Dashboard)
 
@@ -42,7 +56,7 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 	r.Route("/app", func(r chi.Router) {
 		// FUTURE: r.Use(AuthMiddleware)
 		// FUTURE: r.Use(h.RequireSession)
-		// TODO: r.Get("/dashboard",  h.handleDashboard)
+		r.Get("/dashboard", h.handleDashboard)
 	})
 
 	// C. HX Group (Fragments Only - Requires Session Later)

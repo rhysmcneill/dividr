@@ -6,6 +6,7 @@ GOLANGCI_LINT ?= golangci-lint
 MIGRATE ?= migrate
 SQLC ?= sqlc
 TEMPL ?= templ
+TAILWINDCSS ?= tailwindcss
 VERSION ?= dev
 
 # Database configuration - reads password from secret file
@@ -13,30 +14,36 @@ DB_PASSWORD := $(shell cat docker/secrets/db_password.txt 2>/dev/null || echo ""
 DATABASE_URL ?= postgres://dividr:$(DB_PASSWORD)@localhost:5432/dividr?sslmode=disable
 
 # Phony targets (not real files)
-.PHONY: all build dev test lint tidy fmt vet run clean frontend docker migrate-create migrate-up migrate-down migrate-force docker-build docker-clean generate sqlc
+.PHONY: all build dev test lint tidy fmt vet run clean frontend docker migrate-create migrate-up migrate-down migrate-force docker-build docker-clean generate sqlc css css-watch
 
 # Default target
 all: build
 
-# 1. GENERATE: Compiles Templ components and SQLC queries to Go code
+# GENERATE: Compiles Templ components and SQLC queries to Go code
 generate:
 	@echo "Generating Templ components..."
 	$(TEMPL) generate
 	@echo "Generating SQLC..."
 	# $(SQLC) generate  <-- Uncomment this when you start Story 0.2.1
 
-# 2. BUILD: Depends on 'generate' so code exists before compilation
+# CSS: Build Tailwind CSS
+css:
+	@echo "Building Tailwind CSS..."
+	@mkdir -p web/static/css
+	$(TAILWINDCSS) -i web/css/input.css -o web/static/css/output.css --minify
+
+# CSS-WATCH: Build and watch Tailwind CSS for changes
+css-watch:
+	@echo "Watching Tailwind CSS..."
+	@mkdir -p web/static/css
+	$(TAILWINDCSS) -i web/css/input.css -o web/static/css/output.css --watch
+
+# BUILD: Depends on 'generate' so code exists before compilation
 build: generate
 	@echo "Building binary (version: $(VERSION))..."
 	@mkdir -p $(dir $(BINARY))
 	go build -ldflags "-X 'github.com/rhysmcneill/dividr/internal/http/handler.Version=$(VERSION)'" -o $(BINARY) $(CMD)
 
-# 3. DEV: Using 'air' is recommended for live reloading Templ changes.
-# If you don't use air, this runs generate then go run.
-dev:
-	@echo "Starting Watched Dev Server..."
-	# This runs the air command, which reads .air.toml
-	air
 
 test: generate
 	go test -v ./...
@@ -98,3 +105,19 @@ docker-build:
 
 docker-clean:
 	docker image rm $(DOCKER_TAG) || true
+
+# TEMPL: Generate Go code
+templ:
+	@templ generate
+
+# TEMPL-WATCH: Watch .templ files
+templ-watch:
+	@templ generate --watch --proxy="http://localhost:8080" --open-browser=false
+#
+ DEV: Run Air, Templ Watch, and Tailwind Watch in parallel
+dev:
+	@make -j3 css-watch templ-watch air
+
+# Helper to run air (so we can reference it in 'dev')
+air:
+	@air
