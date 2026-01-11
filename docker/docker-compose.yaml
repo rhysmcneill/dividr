@@ -31,7 +31,8 @@ services:
 
   dividr:
     container_name: dividr
-    image: ghcr.io/rhysmcneill/dividr:0.3.0
+    image: dividr:latest
+      #image: ghcr.io/rhysmcneill/dividr:0.3.0
     environment:
       APP_ENV: production
       DB_HOST: postgres
