@@ -12,21 +12,21 @@ import (
 )
 
 const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (token, user_id, expiry)
+INSERT INTO sessions (token, data, expiry)
 VALUES ($1, $2, $3)
-RETURNING token, user_id, expiry
+RETURNING token, expiry, data
 `
 
 type CreateSessionParams struct {
 	Token  string             `json:"token"`
-	UserID pgtype.UUID        `json:"user_id"`
+	Data   []byte             `json:"data"`
 	Expiry pgtype.Timestamptz `json:"expiry"`
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
-	row := q.db.QueryRow(ctx, createSession, arg.Token, arg.UserID, arg.Expiry)
+	row := q.db.QueryRow(ctx, createSession, arg.Token, arg.Data, arg.Expiry)
 	var i Session
-	err := row.Scan(&i.Token, &i.UserID, &i.Expiry)
+	err := row.Scan(&i.Token, &i.Expiry, &i.Data)
 	return i, err
 }
 
@@ -40,7 +40,7 @@ func (q *Queries) DeleteSession(ctx context.Context, token string) error {
 }
 
 const getSession = `-- name: GetSession :one
-SELECT token, user_id, expiry FROM sessions
+SELECT token, expiry, data FROM sessions
 WHERE token = $1
 AND expiry > NOW()
 LIMIT 1
@@ -49,6 +49,6 @@ LIMIT 1
 func (q *Queries) GetSession(ctx context.Context, token string) (Session, error) {
 	row := q.db.QueryRow(ctx, getSession, token)
 	var i Session
-	err := row.Scan(&i.Token, &i.UserID, &i.Expiry)
+	err := row.Scan(&i.Token, &i.Expiry, &i.Data)
 	return i, err
 }
