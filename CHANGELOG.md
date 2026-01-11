@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.4.0] - 2026-01-11
+
+**Type:** MINOR
+
+### Changes
+- minor: implementing auth system scs (postgres), and password hashing using bcrypt. Integrating sign up and login pages and RequireAuth handler middleware for protecting private endpoints using sessions
+- chore: Adding output.css to gitignore and container names to d-c.yml
+- chore: Adding output.css to gitignore and container names to d-c.yml
+- chore: Adding css output.css and container names to d-c.yml
+
+
 ## [v0.3.0] - 2026-01-10
 
 **Type:** MINOR
