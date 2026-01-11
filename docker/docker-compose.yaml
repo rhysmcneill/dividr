@@ -6,6 +6,7 @@ secrets:
 
 services:
   postgres:
+    container_name: dividr-postgres
     image: postgres:17
     environment:
       POSTGRES_USER: dividr
@@ -20,6 +21,7 @@ services:
     restart: unless-stopped
 
   adminer:
+    container_name: adminer
     image: adminer
     ports:
       - "8081:8080"
@@ -28,7 +30,8 @@ services:
     restart: unless-stopped
 
   dividr:
-    image: ghcr.io/rhysmcneill/dividr:0.2.0
+    container_name: dividr
+    image: ghcr.io/rhysmcneill/dividr:0.3.0
     environment:
       APP_ENV: production
       DB_HOST: postgres
