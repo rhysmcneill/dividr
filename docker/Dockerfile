@@ -4,15 +4,17 @@ ARG VERSION=dev
 # ==============================================================================
 # STAGE 1: The Builder
 # ==============================================================================
-FROM golang:${GO_VERSION}-alpine AS builder
+FROM golang:${GO_VERSION}-bookworm AS builder
 
 ARG VERSION
 
 # 1. Install system dependencies
-RUN apk add --no-cache git make curl
+RUN apt-get update && apt-get install -y git make curl
 
-# 2. Install Templ CLI
-RUN go install github.com/a-h/templ/cmd/templ@latest
+# 2. Install Templ CLI and SQLC
+RUN go install github.com/a-h/templ/cmd/templ@latest && \
+    go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+
 
 WORKDIR /app
 
@@ -21,7 +23,6 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # 4. Install Tailwind CSS (Globally in the Container)
-# We download it directly to /usr/local/bin/tailwindcss so it's in the PATH.
 RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 && \
     mv tailwindcss-linux-x64 /usr/local/bin/tailwindcss && \
     chmod +x /usr/local/bin/tailwindcss
@@ -30,8 +31,7 @@ RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/downlo
 COPY . .
 
 # 6. Run the Build Pipeline
-# Now 'make build' just works, because 'tailwindcss' is in the PATH
-RUN make build
+RUN make css && CGO_ENABLED=0 GOOS=linux make build
 
 # ==============================================================================
 # STAGE 2: The Runner (Production)
