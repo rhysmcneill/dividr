@@ -31,9 +31,19 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		_ = render.Component(w, r, http.StatusNotFound, pages.NotFound())
 	})
+
 	// --- Public Routes ---
 	r.HandleFunc("GET /health", h.handleDBHealth) // Basic connectivity check
-	r.Get("/", h.handleLanding)                   // Landing Page
+	r.Get("/", h.handleLanding)
+
+	// Auth Routes
+	r.Get("/login", h.handleLoginPage)
+	r.Post("/login", h.handleLoginSubmit)
+
+	r.Get("/signup", h.handleSignupPage)
+	r.Post("/signup", h.handleSignupSubmit)
+
+	r.Post("/logout", h.handleLogout)
 
 	// --- API V1 Routes ---
 	r.Route("/api/v1", func(r chi.Router) {
@@ -54,15 +64,13 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 
 	// The App (Strictly Private routes - Requires Session)
 	r.Route("/app", func(r chi.Router) {
-		// FUTURE: r.Use(AuthMiddleware)
-		// FUTURE: r.Use(h.RequireSession)
+		r.Use(mw.RequireAuth(h.sessionManager))
 		r.Get("/dashboard", h.handleDashboard)
 	})
 
 	// C. HX Group (Fragments Only - Requires Session Later)
 	r.Route("/hx", func(r chi.Router) {
-		// FUTURE: r.Use(AuthMiddleware)
-		// FUTURE: r.Use(h.RequireSession)
+		r.Use(mw.RequireAuth(h.sessionManager))
 		// TODO: r.Get("/summary", h.handleHXSummary)
 	})
 

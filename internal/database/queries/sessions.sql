@@ -1,5 +1,5 @@
 -- name: CreateSession :one
-INSERT INTO sessions (token, user_id, expiry)
+INSERT INTO sessions (token, data, expiry)
 VALUES ($1, $2, $3)
 RETURNING *;
 

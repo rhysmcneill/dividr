@@ -24,7 +24,7 @@ generate:
 	@echo "Generating Templ components..."
 	$(TEMPL) generate
 	@echo "Generating SQLC..."
-	# $(SQLC) generate  <-- Uncomment this when you start Story 0.2.1
+	cd internal/database && $(SQLC) generate && cd ../..
 
 # CSS: Build Tailwind CSS
 css:
