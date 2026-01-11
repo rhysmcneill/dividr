@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.4.1] - 2026-01-11
+
+**Type:** PATCH
+
+### Changes
+- patch: Fixing build issue compatibilities with tailwind and alpine images, changing base image to debian
+
+
 ## [v0.4.0] - 2026-01-11
 
 **Type:** MINOR
