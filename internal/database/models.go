@@ -53,8 +53,8 @@ type Receipt struct {
 
 type Session struct {
 	Token  string             `json:"token"`
-	UserID pgtype.UUID        `json:"user_id"`
 	Expiry pgtype.Timestamptz `json:"expiry"`
+	Data   []byte             `json:"data"`
 }
 
 type Transaction struct {

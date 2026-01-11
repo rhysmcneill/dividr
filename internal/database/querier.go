@@ -15,7 +15,7 @@ type Querier interface {
 	CreateReceipt(ctx context.Context, arg CreateReceiptParams) (Receipt, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error)
-	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	DeleteSession(ctx context.Context, token string) error
 	// The Purge. Runs after submission.
 	DeleteTransactionsForPeriod(ctx context.Context, arg DeleteTransactionsForPeriodParams) error

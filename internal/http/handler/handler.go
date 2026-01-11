@@ -7,6 +7,7 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/alexedwards/scs/v2"
 	"github.com/rhysmcneill/dividr/internal/config"
 	"github.com/rhysmcneill/dividr/internal/database"
 	"github.com/rhysmcneill/dividr/internal/errs"
@@ -16,14 +17,16 @@ import (
 )
 
 type Handler struct {
-	DB     *database.Service
-	Config *config.Config
+	DB             *database.Service
+	Config         *config.Config
+	sessionManager *scs.SessionManager
 }
 
-func New(db *database.Service, cfg *config.Config) *Handler {
+func New(db *database.Service, cfg *config.Config, sessionManager *scs.SessionManager) *Handler {
 	return &Handler{
-		DB:     db,
-		Config: cfg,
+		DB:             db,
+		Config:         cfg,
+		sessionManager: sessionManager,
 	}
 }
 
