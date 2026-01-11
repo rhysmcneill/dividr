@@ -23,3 +23,6 @@
 
 # Docker secrets
 docker/secrets/*.txt
+
+# CSS
+web/static/css/output.css
