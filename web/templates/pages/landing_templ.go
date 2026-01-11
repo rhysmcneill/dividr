@@ -46,7 +46,7 @@ func Landing() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"relative isolate px-6 pt-14 lg:px-8\"><div class=\"mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 text-center\"><h1 class=\"text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl\">Split your income. File quarterly. Stress less.</h1><p class=\"mt-6 text-lg leading-8 text-gray-600\">Dividr helps sole traders, freelancers and property landlords submit their taxes quarterly with ease.</p><div class=\"mt-10 flex items-center justify-center gap-x-6\"><a href=\"/app/dashboard\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"relative isolate px-6 pt-14 lg:px-8\"><div class=\"mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 text-center\"><h1 class=\"text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl\">Split your income. File quarterly. Stress less.</h1><p class=\"mt-6 text-lg leading-8 text-gray-600\">Dividr helps sole traders, freelancers and property landlords submit their taxes quarterly with ease.</p><div class=\"mt-10 flex items-center justify-center gap-x-6\"><a href=\"/signup\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -54,19 +54,15 @@ func Landing() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</a><div id=\"health-status\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</a><a href=\"/signin\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.Button("Check System Status", templ.Attributes{
-				"hx-get":    "/api/v1/health",
-				"hx-target": "#health-status",
-				"hx-swap":   "outerHTML",
-			}, false).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.Button("Sign in", nil, false).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

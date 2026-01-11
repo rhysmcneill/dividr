@@ -17,19 +17,14 @@ templ Landing() {
 				</p>
 				<div class="mt-10 flex items-center justify-center gap-x-6">
 					// Link to the dashboard
-					<a href="/app/dashboard">
+					<a href="/signup">
 						@components.Button("Get Started", nil, true)
 					</a>
 
-					// --- HTMX PROOF ---
-					// This button hits /api/v1/health and swaps the text with the result
-					<div id="health-status">
-						@components.Button("Check System Status", templ.Attributes{
-							"hx-get": "/api/v1/health",
-							"hx-target": "#health-status",
-							"hx-swap": "outerHTML",
-						}, false)
-					</div>
+					// Sign up link
+					<a href="/signin">
+						@components.Button("Sign in", nil, false)
+					</a>
 				</div>
 			</div>
 		</div>

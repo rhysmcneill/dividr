@@ -4,6 +4,8 @@ import (
 	"log/slog"
 	"net/http"
 	"runtime/debug"
+
+	"github.com/alexedwards/scs/v2"
 )
 
 // RecoverPanic catches any code that crashes the thread and returns a 500
@@ -47,4 +49,20 @@ func SecureHeaders(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+// RequireAuth redirects unauthenticated users to the login page
+func RequireAuth(sessionManager *scs.SessionManager) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// We check if "userID" exists in the session.
+			// (We haven't built the Login handler yet, but this is the check we will use)
+			if !sessionManager.Exists(r.Context(), "userID") {
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
 }
