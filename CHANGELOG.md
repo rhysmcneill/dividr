@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.5.0] - 2026-01-12
+
+**Type:** MINOR
+
+### Changes
+- minor: Create product branding, landing page, set up privacy, security and terms pages. Integrating SEO (robot.txt and sitemap.xml), integrating a waitlist and refined my frontend folder structure
+
+
 ## [v0.4.1] - 2026-01-11
 
 **Type:** PATCH
