@@ -1,0 +1,97 @@
+package shared
+
+// Base layout accepts a title, login state, and the content to render inside
+templ Base(title string, isLoggedIn bool) {
+    <!DOCTYPE html>
+    <html lang="en" class="scroll-smooth h-auto bg-zinc-950">
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>{ title } | Dividr</title>
+
+            // --- SEO ---
+            <meta name="description" content="The bridge for landlords and sole traders who love Excel but need to comply with HMRC MTD 2026. Upload, map, submit, and purge."/>
+
+            // --- Favicons ---
+            // Ensure you add these files to your /static/img/ folder
+            <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg" />
+            <link rel="icon" type="image/png" href="/static/img/favicon.png" />
+
+            // --- OpenGraph (Facebook / LinkedIn / Discord) ---
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="https://dividr.app/" />
+            <meta property="og:title" content="{ title } | Dividr" />
+            <meta property="og:description" content="Keep your process. Automate the submission. The privacy-first MTD bridge for 2026." />
+            <meta property="og:image" content="https://dividr.co.uk/static/img/og-social-card.png" />
+
+            // --- Twitter ---
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta property="twitter:domain" content="dividr.co.uk" />
+            <meta property="twitter:url" content="https://dividr.co.uk/" />
+            <meta name="twitter:title" content="{ title } | Dividr" />
+            <meta name="twitter:description" content="Keep your process. Automate the submission. The privacy-first MTD bridge for 2026." />
+            <meta name="twitter:image" content="https://dividr.co.uk/static/img/og-social-card.png" />
+
+            // --- Styles & Scripts ---
+            <link href="/static/css/output.css" rel="stylesheet"/>
+            <script src="/static/js/htmx.min.js"></script>
+            // Added Inter font to match Landing
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+        </head>
+
+        <body class="flex flex-col font-sans antialiased text-zinc-300 selection:bg-blue-500/30 min-h-screen overflow-x-hidden">
+
+            // --- HEADER ---
+            <header class="fixed w-full top-0 z-50 border-b border-white/5 bg-zinc-950/80 backdrop-blur-md">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="flex h-16 items-center justify-between">
+                        // LOGO AREA
+                        <div class="flex items-center gap-2">
+                            <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                                <svg class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 4C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20H12C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4H6ZM12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17Z" fill-opacity="0.2"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6Z" />
+                                    <path d="M12 8V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                <span class="text-lg font-bold text-white tracking-tight">Dividr</span>
+                            </a>
+                        </div>
+
+                        // NAV ITEMS
+                        <div class="flex items-center gap-4">
+                            <a href="/#how-it-works" class="text-sm font-semibold leading-6 text-white hover:text-blue-400 transition-colors">How it works</a>
+
+                            if !isLoggedIn {
+                                <a href="/login" class="text-sm font-semibold text-zinc-300 hover:text-white transition-colors">Log in</a>
+                                <a href="/signup" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-colors">
+                                    Get Started
+                                </a>
+                            } else {
+                                <a href="/app/dashboard" class="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition-colors">
+                                    Dashboard
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            // --- MAIN CONTENT ---
+            <main class="flex-grow relative flex flex-col pt-0">
+                { children... }
+            </main>
+
+            // --- FOOTER ---
+            <footer class="bg-black border-t border-white/5 py-12 mt-auto">
+                <div class="mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6 lg:px-8">
+                    <p class="text-xs leading-5 text-zinc-500">&copy; 2026 Dividr. All rights reserved.</p>
+                    <div class="flex gap-x-8">
+                        <a href="/privacy" class="text-xs leading-5 text-zinc-500 hover:text-white transition-colors">Privacy & Data</a>
+                        <a href="/security" class="text-xs leading-5 text-zinc-500 hover:text-white transition-colors">Security</a>
+                        <a href="/terms" class="text-xs leading-5 text-zinc-500 hover:text-white transition-colors">Terms</a>
+                    </div>
+                </div>
+            </footer>
+        </body>
+    </html>
+}

@@ -11,11 +11,13 @@ import (
 )
 
 type Querier interface {
+	CheckWaitlistEmail(ctx context.Context, email string) (bool, error)
 	CreateImportBatch(ctx context.Context, arg CreateImportBatchParams) (TransactionImportBatch, error)
 	CreateReceipt(ctx context.Context, arg CreateReceiptParams) (Receipt, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
+	CreateWaitlistEntry(ctx context.Context, email string) (Waitlist, error)
 	DeleteSession(ctx context.Context, token string) error
 	// The Purge. Runs after submission.
 	DeleteTransactionsForPeriod(ctx context.Context, arg DeleteTransactionsForPeriodParams) error

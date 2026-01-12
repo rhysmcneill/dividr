@@ -1,22 +1,17 @@
-package pages
+package dashboard
 
 import (
-	"github.com/rhysmcneill/dividr/web/templates/layouts"
+	"github.com/rhysmcneill/dividr/web/templates/shared"
 	"github.com/rhysmcneill/dividr/web/templates/components"
 )
 
-templ Dashboard() {
-	@layouts.Base("Dashboard") {
+templ Page() {
+	@shared.Base("Dashboard", true) {
 		<div class="py-10">
 			<header>
 				<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex justify-between items-center">
 					<h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">Dashboard</h1>
 
-					<form action="/logout" method="POST">
-						<button type="submit" class="text-sm font-semibold leading-6 text-gray-900 hover:text-red-600">
-							Sign out <span aria-hidden="true">&rarr;</span>
-						</button>
-					</form>
 				</div>
 			</header>
 			<main>

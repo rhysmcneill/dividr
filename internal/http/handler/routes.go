@@ -8,7 +8,7 @@ import (
 	"github.com/rhysmcneill/dividr/internal/http/handler/render"
 	mw "github.com/rhysmcneill/dividr/internal/http/middleware"
 	"github.com/rhysmcneill/dividr/web"
-	"github.com/rhysmcneill/dividr/web/templates/pages"
+	errpages "github.com/rhysmcneill/dividr/web/templates/errors"
 )
 
 // RegisterRoutes sets up the router and all endpoints
@@ -29,12 +29,18 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 
 	// --- Error Pages ---
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		_ = render.Component(w, r, http.StatusNotFound, pages.NotFound())
+		_ = render.Component(w, r, http.StatusNotFound, errpages.NotFound())
 	})
 
 	// --- Public Routes ---
 	r.HandleFunc("GET /health", h.handleDBHealth) // Basic connectivity check
 	r.Get("/", h.handleLanding)
+	r.Post("/waitlist", WaitlistHandler(h))
+
+	// Legal Pages
+	r.Get("/privacy", PrivacyHandler)
+	r.Get("/terms", TermsHandler)
+	r.Get("/security", SecurityHandler)
 
 	// Auth Routes
 	r.Get("/login", h.handleLoginPage)

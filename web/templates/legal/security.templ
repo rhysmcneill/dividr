@@ -1,0 +1,42 @@
+package legal
+
+templ Security() {
+    @Layout("Security", "January 12, 2026") {
+
+        <p class="lead text-xl text-zinc-300">
+            Security is our primary feature. Because we handle financial data, we design our systems to hold as little sensitive information as possible ("Data Minimization").
+        </p>
+
+        <h3>1. Infrastructure & Encryption</h3>
+        <p>
+            Our infrastructure is hosted on AWS (London Region) to ensure UK data sovereignty compliance.
+        </p>
+        <ul>
+            <li><strong>In Transit:</strong> All data is encrypted via TLS 1.3 during transmission.</li>
+            <li><strong>At Rest:</strong> OAuth tokens and user metadata are encrypted using AES-256 before being stored in our database.</li>
+        </ul>
+
+        <h3>2. Minimal Retention Architecture</h3>
+        <p>
+            Unlike traditional accounting software, we do not want to be the "source of truth" for your financial history.
+        </p>
+        <ul>
+            <li>Files you upload are processed in memory and immediately discarded.</li>
+            <li>Parsed transaction rows are stored in a temporary "staging" table.</li>
+            <li><strong>The Purge:</strong> Upon successful submission to HMRC (or after 24 hours of inactivity), raw transaction data is permanently deleted from our servers.</li>
+        </ul>
+
+        <h3>3. Incident Support</h3>
+        <p>
+            Because we delete your raw data, we cannot "look up" your past transactions to debug issues.
+        </p>
+        <p>
+            If you need support regarding a submission, you must provide the <strong>Receipt ID</strong> or <strong>Correlation ID</strong> provided at the time of submission. This allows us to trace the audit logs without accessing your financial contents.
+        </p>
+
+        <h3>4. Vulnerability Reporting</h3>
+        <p>
+            If you discover a security vulnerability, please report it to security@dividr.app. We appreciate your help in keeping the platform safe.
+        </p>
+    }
+}
