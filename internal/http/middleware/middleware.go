@@ -66,3 +66,26 @@ func RequireAuth(sessionManager *scs.SessionManager) func(http.Handler) http.Han
 		})
 	}
 }
+
+func SEOCache(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "public, max-age=86400")
+		next.ServeHTTP(w, r)
+	})
+}
+
+// ContentTypeText sets the Content-Type to text/plain
+func ContentTypeText(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		next.ServeHTTP(w, r)
+	})
+}
+
+// ContentTypeXML sets the Content-Type to application/xml
+func ContentTypeXML(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+		next.ServeHTTP(w, r)
+	})
+}
