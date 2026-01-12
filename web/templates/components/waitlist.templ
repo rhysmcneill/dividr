@@ -1,0 +1,21 @@
+package components
+
+templ WaitlistSuccess() {
+    <div class="rounded-full bg-blue-600/10 px-6 py-3 text-center border border-blue-500/20 w-full max-w-md animate-in fade-in zoom-in duration-300">
+        <h3 class="text-sm font-semibold text-blue-400">
+            You're on the list! <span class="text-blue-500/70 ml-1">We'll be in touch soon.</span>
+        </h3>
+    </div>
+}
+
+templ WaitlistError(message string) {
+    <div class="rounded-full bg-red-600/10 px-6 py-3 text-center border border-red-500/20 w-full max-w-md animate-in fade-in zoom-in duration-300">
+        <h3 class="text-sm font-semibold text-red-400">
+            Error: <span class="text-red-500/70 ml-1">{ message }</span>
+        </h3>
+        // Optional: A tiny button to reload the form/page if they want to try again
+        <div class="mt-1">
+             <a href="/" class="text-xs text-red-400 underline hover:text-red-300">Try again</a>
+        </div>
+    </div>
+}

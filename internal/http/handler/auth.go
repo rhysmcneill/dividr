@@ -7,21 +7,21 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/rhysmcneill/dividr/internal/database"
 	"github.com/rhysmcneill/dividr/internal/http/handler/render"
-	"github.com/rhysmcneill/dividr/web/templates/pages"
+	"github.com/rhysmcneill/dividr/web/templates/auth"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // --- RENDER HANDLERS ---
 
 func (h *Handler) handleLoginPage(w http.ResponseWriter, r *http.Request) {
-	if err := render.Component(w, r, http.StatusOK, pages.Login()); err != nil {
+	if err := render.Component(w, r, http.StatusOK, auth.Login()); err != nil {
 		h.respondWithError(w, r, err)
 		return
 	}
 }
 
 func (h *Handler) handleSignupPage(w http.ResponseWriter, r *http.Request) {
-	if err := render.Component(w, r, http.StatusOK, pages.Signup()); err != nil {
+	if err := render.Component(w, r, http.StatusOK, auth.Signup()); err != nil {
 		h.respondWithError(w, r, err)
 		return
 	}

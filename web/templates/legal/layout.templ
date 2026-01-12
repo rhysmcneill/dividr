@@ -1,0 +1,32 @@
+package legal
+
+import "github.com/rhysmcneill/dividr/web/templates/shared"
+
+// Layout defines the look for Privacy, Terms, and Security.
+// It automatically passes 'false' to Base because legal pages are public.
+templ Layout(pageTitle string, lastUpdated string) {
+    @shared.Base(pageTitle, false) {
+        <div class="relative isolate min-h-screen">
+
+            // Background Glow (Optional, keeps it consistent)
+            <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80 pointer-events-none">
+                <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
+            </div>
+
+            <main class="px-6 py-24 sm:py-32 lg:px-8">
+                <div class="mx-auto max-w-2xl text-center">
+                    <p class="text-base font-semibold leading-7 text-blue-400">Legal</p>
+                    <h1 class="mt-2 text-4xl font-bold tracking-tight text-white sm:text-6xl">{ pageTitle }</h1>
+                    <p class="mt-6 text-base leading-7 text-zinc-500">Last updated: { lastUpdated }</p>
+                </div>
+
+                <div class="mx-auto mt-16 max-w-2xl">
+                    // 'prose-invert' makes the text white/grey automatically
+                    <div class="prose prose-lg prose-invert prose-zinc mx-auto">
+                        { children... }
+                    </div>
+                </div>
+            </main>
+        </div>
+    }
+}
