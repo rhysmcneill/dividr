@@ -11,29 +11,62 @@ import (
 	"github.com/rhysmcneill/dividr/internal/config"
 	"github.com/rhysmcneill/dividr/internal/database"
 	"github.com/rhysmcneill/dividr/internal/errs"
-	"github.com/rhysmcneill/dividr/internal/http/handler/render" // <--- Need this
+	"github.com/rhysmcneill/dividr/internal/http/handler/render"
 	"github.com/rhysmcneill/dividr/internal/http/json"
-	"github.com/rhysmcneill/dividr/web/templates/pages" // <--- Need this
+	"github.com/rhysmcneill/dividr/web"
+	"github.com/rhysmcneill/dividr/web/templates/dashboard"
+	errpages "github.com/rhysmcneill/dividr/web/templates/errors"
+	"github.com/rhysmcneill/dividr/web/templates/landing"
 )
 
 type Handler struct {
 	DB             *database.Service
 	Config         *config.Config
 	sessionManager *scs.SessionManager
+	RobotsData     []byte
+	SitemapData    []byte
 }
 
 func New(db *database.Service, cfg *config.Config, sessionManager *scs.SessionManager) *Handler {
+	// 1. Load SEO files
+	robots, err := web.Files.ReadFile("seo/robots.txt")
+	if err != nil {
+		slog.Error("failed to load robots.txt", "error", err)
+		panic("Fatal Error: robots.txt missing from embed")
+	}
+
+	sitemap, err := web.Files.ReadFile("seo/sitemap.xml")
+	if err != nil {
+		slog.Error("failed to load sitemap.xml", "error", err)
+		panic("Fatal Error: sitemap.xml missing from embed")
+	}
+
 	return &Handler{
 		DB:             db,
 		Config:         cfg,
 		sessionManager: sessionManager,
+		RobotsData:     robots,
+		SitemapData:    sitemap,
+	}
+}
+
+// SEO HANDLERS
+func (h *Handler) RobotsTXT(w http.ResponseWriter, r *http.Request) {
+	if _, err := w.Write(h.RobotsData); err != nil {
+		slog.Error("failed to write robots.txt", "error", err)
+	}
+}
+
+func (h *Handler) SitemapXML(w http.ResponseWriter, r *http.Request) {
+	if _, err := w.Write(h.SitemapData); err != nil {
+		slog.Error("failed to write sitemap.xml", "error", err)
 	}
 }
 
 // handleLanding renders the public home page
 func (h *Handler) handleLanding(w http.ResponseWriter, r *http.Request) {
 	// 200 OK
-	if err := render.Component(w, r, http.StatusOK, pages.Landing()); err != nil {
+	if err := render.Component(w, r, http.StatusOK, landing.Page()); err != nil {
 		h.respondWithError(w, r, err)
 	}
 }
@@ -41,7 +74,7 @@ func (h *Handler) handleLanding(w http.ResponseWriter, r *http.Request) {
 // handleDashboard renders the main app view
 func (h *Handler) handleDashboard(w http.ResponseWriter, r *http.Request) {
 	// 200 OK
-	if err := render.Component(w, r, http.StatusOK, pages.Dashboard()); err != nil {
+	if err := render.Component(w, r, http.StatusOK, dashboard.Page()); err != nil {
 		h.respondWithError(w, r, err)
 	}
 }
@@ -82,12 +115,12 @@ func (h *Handler) respondWithError(w http.ResponseWriter, r *http.Request, err e
 		} else {
 			// If it's a 404, show the specific Not Found page
 			if appErr.Status == http.StatusNotFound {
-				if err := render.Component(w, r, appErr.Status, pages.NotFound()); err != nil {
+				if err := render.Component(w, r, appErr.Status, errpages.NotFound()); err != nil {
 					slog.Error("failed to render 404 page", "error", err)
 				}
 			} else {
 				// Otherwise show the generic 500 page with the specific error message
-				if err := render.Component(w, r, appErr.Status, pages.ServerError(appErr.Msg)); err != nil {
+				if err := render.Component(w, r, appErr.Status, errpages.ServerError(appErr.Msg)); err != nil {
 					slog.Error("failed to render error page", "error", err)
 				}
 			}
@@ -109,7 +142,7 @@ func (h *Handler) respondWithError(w http.ResponseWriter, r *http.Request, err e
 	} else {
 		// For browsers, show the generic "Something went wrong" page.
 		// We pass an empty string to show the default friendly message defined in the template.
-		if err := render.Component(w, r, http.StatusInternalServerError, pages.ServerError("")); err != nil {
+		if err := render.Component(w, r, http.StatusInternalServerError, errpages.ServerError("")); err != nil {
 			slog.Error("failed to render 500 page", "error", err)
 		}
 	}
