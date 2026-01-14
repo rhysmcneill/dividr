@@ -4,9 +4,11 @@ ARG VERSION=dev
 # ==============================================================================
 # STAGE 1: The Builder
 # ==============================================================================
-FROM golang:${GO_VERSION}-bookworm AS builder
+FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-bookworm AS builder
 
 ARG VERSION
+ARG TARGETOS
+ARG TARGETARCH
 
 # 1. Install system dependencies
 RUN apt-get update && apt-get install -y git make curl
@@ -31,7 +33,8 @@ RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/downlo
 COPY . .
 
 # 6. Run the Build Pipeline
-RUN make css && CGO_ENABLED=0 GOOS=linux make build
+RUN make css && \
+    CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH make build
 
 # ==============================================================================
 # STAGE 2: The Runner (Production)
