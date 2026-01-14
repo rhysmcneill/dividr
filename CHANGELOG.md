@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.5.1] - 2026-01-14
+
+**Type:** PATCH
+
+### Changes
+- patch: optimising builds for multi-arch docker images
+- patch: Solving deployment issues with raspberry pi arm64 architecture - integrating mult-arch image builds via QEMU
+- bugfix: SOlving deployment issues with raspberry pi arm64 architecture
+
+
 ## [v0.5.0] - 2026-01-12
 
 **Type:** MINOR
