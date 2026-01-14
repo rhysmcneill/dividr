@@ -42,6 +42,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Found tag: $LATEST_TAG (version: $VERSION)"
 
+      # Necessary for building multi-arch images
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
