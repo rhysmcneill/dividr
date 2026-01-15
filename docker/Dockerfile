@@ -34,11 +34,14 @@ RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/downlo
 COPY . .
 
 # 6. Run the Build Pipeline
-# We generate Templ files -> Generate SQLC -> Generate CSS -> Build Binary
-# This ensures 'go:embed' finds the CSS and Migration files exactly where it expects them.
 RUN templ generate && \
     sqlc generate -f internal/database/sqlc.yaml && \
     make css && \
+    # 1. Create the folder structure inside 'web' package
+    mkdir -p web/static/css && \
+    # 2. Copy the fresh CSS from root to where Go expects it
+    cp static/css/output.css web/static/css/output.css && \
+    # Multi-arch build for the final binary
     CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH make build
 
 # ==============================================================================
