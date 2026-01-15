@@ -1,5 +1,7 @@
 package landing
 
+import "github.com/rhysmcneill/dividr/internal/http/middleware"
+
 templ Layout(title string) {
     <!DOCTYPE html>
     <html lang="en-GB" class="scroll-smooth h-auto bg-zinc-950">
@@ -9,6 +11,7 @@ templ Layout(title string) {
             <meta charset="UTF-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <meta name="description" content="The spreadsheet bridge for landlords and sole traders. Keep using Excel, but comply with HMRC MTD 2026. Upload, link, file, and clear."/>
+            <meta name="htmx-config" content={ middleware.GetHTMXConfig(ctx) } />
 
             // --- Favicon ---
             <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg" />
@@ -31,7 +34,7 @@ templ Layout(title string) {
 
             // --- CSS & Scripts ---
             <link href="/static/css/output.css" rel="stylesheet"/>
-            <script src="/static/js/htmx.min.js"></script>
+            <script src="/static/js/htmx.min.js" nonce={ middleware.GetNonce(ctx) }></script>
             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
         </head>
 

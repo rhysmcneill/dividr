@@ -1,5 +1,7 @@
 package shared
 
+import "github.com/rhysmcneill/dividr/internal/http/middleware"
+
 // Base layout accepts a title, login state, and the content to render inside
 templ Base(title string, isLoggedIn bool) {
     <!DOCTYPE html>
@@ -18,7 +20,6 @@ templ Base(title string, isLoggedIn bool) {
 
             // --- OpenGraph (Facebook / LinkedIn / Discord) ---
             <meta property="og:type" content="website" />
-            // FIXED: Domain is now co.uk
             <meta property="og:url" content="https://dividr.co.uk/" />
             <meta property="og:title" content="{ title } | Dividr" />
             <meta property="og:description" content="Keep your process. Automate the filing. The privacy-first MTD bridge for 2026." />
@@ -34,7 +35,7 @@ templ Base(title string, isLoggedIn bool) {
 
             // --- Styles & Scripts ---
             <link href="/static/css/output.css" rel="stylesheet"/>
-            <script src="/static/js/htmx.min.js"></script>
+            <script src="/static/js/htmx.min.js" nonce={ middleware.GetNonce(ctx) }></script>
             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
         </head>
 
