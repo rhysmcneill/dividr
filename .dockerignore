@@ -19,3 +19,9 @@ vendor/
 
 # Docker secrets
 docker/secrets/*.txt
+
+# CSS output (generated file)
+web/static/css/output.css
+
+# Templ generated files
+**/*_templ.go
