@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## [v0.6.9] - 2026-01-15
+
+**Type:** PATCH
+
+### Changes
+- patch: typo in landing page
+
+
 ## [v0.6.8] - 2026-01-15
 
 **Type:** PATCH
