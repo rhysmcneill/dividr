@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 
 
+## [v0.6.10] - 2026-01-15
+
+**Type:** PATCH
+
+### Changes
+- patch: typo in landing
+- chore: update generated templ files
+
+
 ## [v0.6.9] - 2026-01-15
 
 **Type:** PATCH
