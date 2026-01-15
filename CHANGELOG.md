@@ -2,13 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## [v0.6.3] - 2026-01-15
-
-**Type:** PATCH
-
-### Changes
-- patch: Updating build artifact web/static/css directory
-
 
 ## [v0.6.2] - 2026-01-15
 
