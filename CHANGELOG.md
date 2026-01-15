@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## [v0.6.4] - 2026-01-15
+
+**Type:** PATCH
+
+### Changes
+- patch: renaming 002 migration
+
+
 ## [v0.6.3] - 2026-01-15
 
 **Type:** PATCH
