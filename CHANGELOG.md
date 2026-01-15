@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.6.2] - 2026-01-15
+
+**Type:** PATCH
+
+### Changes
+- reverting errornous 0.6.2 release
+- chore(release): update CHANGELOG for v0.6.2 [skip ci]
+- patch: refactoring base template
+
+
 ## [v0.6.1] - 2026-01-15
 
 **Type:** PATCH
