@@ -29,7 +29,9 @@ generate:
 # CSS: Build Tailwind CSS
 css:
 	@echo "Building Tailwind CSS..."
+	# 1. Create the folder inside 'web' so go:embed can find it
 	@mkdir -p web/static/css
+	# 2. Build CSS: Input from web/css -> Output to web/static/css
 	$(TAILWINDCSS) -i web/css/input.css -o web/static/css/output.css --minify
 
 # CSS-WATCH: Build and watch Tailwind CSS for changes
