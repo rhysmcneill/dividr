@@ -42,5 +42,5 @@ func TestDatabaseMigrations(t *testing.T) {
 		t.Fatalf("Migration failed to create 'sessions' table: %v", err)
 	}
 
-	t.Log("Success: Migration ran and 'sessions' table exists.")
+	t.Log("Success: Migration ran and tables exist.")
 }

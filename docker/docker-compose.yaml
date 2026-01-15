@@ -29,29 +29,29 @@ services:
       - postgres
     restart: unless-stopped
 
-  dividr:
-    container_name: dividr
-    image: dividr:latest
-      #image: ghcr.io/rhysmcneill/dividr:0.3.0
-    environment:
-      APP_ENV: production
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: dividr
-      DB_NAME: dividr
-    secrets:
-      - db_password
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
+  # dividr:
+  #   container_name: dividr
+  #   image: dividr:latest
+  #     #image: ghcr.io/rhysmcneill/dividr:0.3.0
+  #   environment:
+  #     APP_ENV: production
+  #     DB_HOST: postgres
+  #     DB_PORT: 5432
+  #     DB_USER: dividr
+  #     DB_NAME: dividr
+  #   secrets:
+  #     - db_password
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - postgres
+  #   healthcheck:
+  #     test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
+  #   restart: unless-stopped
 
 volumes:
   db_data:
