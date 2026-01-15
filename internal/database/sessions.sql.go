@@ -14,7 +14,7 @@ import (
 const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (token, data, expiry)
 VALUES ($1, $2, $3)
-RETURNING token, expiry, data
+RETURNING token, data, expiry
 `
 
 type CreateSessionParams struct {
@@ -26,7 +26,7 @@ type CreateSessionParams struct {
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
 	row := q.db.QueryRow(ctx, createSession, arg.Token, arg.Data, arg.Expiry)
 	var i Session
-	err := row.Scan(&i.Token, &i.Expiry, &i.Data)
+	err := row.Scan(&i.Token, &i.Data, &i.Expiry)
 	return i, err
 }
 
@@ -40,7 +40,7 @@ func (q *Queries) DeleteSession(ctx context.Context, token string) error {
 }
 
 const getSession = `-- name: GetSession :one
-SELECT token, expiry, data FROM sessions
+SELECT token, data, expiry FROM sessions
 WHERE token = $1
 AND expiry > NOW()
 LIMIT 1
@@ -49,6 +49,6 @@ LIMIT 1
 func (q *Queries) GetSession(ctx context.Context, token string) (Session, error) {
 	row := q.db.QueryRow(ctx, getSession, token)
 	var i Session
-	err := row.Scan(&i.Token, &i.Expiry, &i.Data)
+	err := row.Scan(&i.Token, &i.Data, &i.Expiry)
 	return i, err
 }

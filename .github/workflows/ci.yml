@@ -21,7 +21,6 @@ jobs:
           POSTGRES_DB: dividr
         ports:
           - 5432:5432
-        # Wait until Postgres is ready before starting steps
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -37,46 +36,31 @@ jobs:
       with:
         go-version: '1.25'
 
-    # Install sqlc forTempl for template generation
     - name: Install templ
       run: go install github.com/a-h/templ/cmd/templ@latest
 
-    # STEP B: Install  type-safe query generation
     - name: Install sqlc
       run: go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
-    # Generate SQLC code and verify it's committed
-    - name: Generate SQLC code
-      run: make sqlc
-
-    - name: Verify SQLC generation is committed
+    # 1. Generate code (Templ + SQLC) to ensure no syntax errors
+    - name: Generate Code
       run: |
-        if [[ -n $(git status --porcelain internal/database) ]]; then
-          echo "[ERROR]: SQLC generated files have uncommitted changes."
-          echo "[INFO]: Please run 'make sqlc' locally and commit the generated files."
+        templ generate
+        make sqlc
+
+    # 2. Verify Generation (Ensures you didn't forget to commit generated files)
+    - name: Verify Generation is Committed
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "[ERROR]: Generated files (Templ/SQLC) have uncommitted changes."
           exit 1
         fi
 
-    # Change this if you use 'goose' or another tool!
-    - name: Install golang-migrate
-      run: |
-        curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-amd64.tar.gz | tar xvz
-        sudo mv migrate /usr/local/bin/migrate
-
-    # STEP C: Run Migrations
-    # This proves your SQL is valid and matches the DB version
-    - name: Run Migrations
-      run: |
-        migrate -path ./internal/database/migrations -database "postgres://user:password@localhost:5432/dividr?sslmode=disable" up
-
-    # STEP D: Run Tests
-    # We pass the DB config so tests can connect to the CI postgres
+    # 3. Run Tests
+    # We REMOVED the manual 'migrate' step. The Go tests will handle it now.
     - name: Run Integration Tests
       env:
-        DB_HOST: localhost
-        DB_PORT: 5432
-        DB_USER: user
-        DB_PASSWORD: password
-        DB_NAME: dividr
+        # Construct the Connection String explicitly for the tests
+        DATABASE_URL: "postgres://user:password@localhost:5432/dividr?sslmode=disable"
         APP_ENV: test
       run: go test -v ./...
