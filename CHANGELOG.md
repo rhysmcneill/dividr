@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.6.0] - 2026-01-15
+
+**Type:** MINOR
+
+### Changes
+- generating sqlc
+- minor: Introducing db migrations in the app, updating meta data in html and fixing html on smaller screens
+- Removing mogrations from CI
+- Running CI test
+
+
 ## [v0.5.1] - 2026-01-14
 
 **Type:** PATCH
