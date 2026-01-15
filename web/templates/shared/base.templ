@@ -10,6 +10,7 @@ templ Base(title string, isLoggedIn bool) {
             <meta charset="UTF-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <title>{ title } | Dividr</title>
+            <meta name="htmx-config" content={ middleware.GetHTMXConfig(ctx) } />
 
             // --- SEO (UK English / Consistent with Landing) ---
             <meta name="description" content="The spreadsheet bridge for landlords and sole traders. Keep using Excel, but comply with HMRC MTD 2026. Upload, link, file, and clear."/>

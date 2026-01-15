@@ -8,6 +8,8 @@ package shared
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "github.com/rhysmcneill/dividr/internal/http/middleware"
+
 // Base layout accepts a title, login state, and the content to render inside
 func Base(title string, isLoggedIn bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -37,28 +39,54 @@ func Base(title string, isLoggedIn bool) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/shared/base.templ`, Line: 10, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/shared/base.templ`, Line: 12, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " | Dividr</title><meta name=\"description\" content=\"The spreadsheet bridge for landlords and sole traders. Keep using Excel, but comply with HMRC MTD 2026. Upload, link, file, and clear.\"><link rel=\"icon\" type=\"image/svg+xml\" href=\"/static/img/favicon.svg\"><link rel=\"icon\" type=\"image/png\" href=\"/static/img/favicon.png\"><meta property=\"og:type\" content=\"website\"><meta property=\"og:url\" content=\"https://dividr.co.uk/\"><meta property=\"og:title\" content=\"{ title } | Dividr\"><meta property=\"og:description\" content=\"Keep your process. Automate the filing. The privacy-first MTD bridge for 2026.\"><meta property=\"og:image\" content=\"https://dividr.co.uk/static/img/social-preview.png\"><meta name=\"twitter:card\" content=\"summary_large_image\"><meta property=\"twitter:domain\" content=\"dividr.co.uk\"><meta property=\"twitter:url\" content=\"https://dividr.co.uk/\"><meta name=\"twitter:title\" content=\"{ title } | Dividr\"><meta name=\"twitter:description\" content=\"Keep your process. Automate the filing. The privacy-first MTD bridge for 2026.\"><meta name=\"twitter:image\" content=\"https://dividr.co.uk/static/img/social-preview.png\"><link href=\"/static/css/output.css\" rel=\"stylesheet\"><script src=\"/static/js/htmx.min.js\"></script><link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap\" rel=\"stylesheet\"></head><body class=\"flex flex-col font-sans antialiased text-zinc-300 selection:bg-blue-500/30 min-h-screen overflow-x-hidden\"><header class=\"fixed w-full top-0 z-50 border-b border-white/5 bg-zinc-950/80 backdrop-blur-md\"><div class=\"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8\"><div class=\"flex h-16 items-center justify-between\"><div class=\"flex items-center gap-2\"><a href=\"/\" class=\"flex items-center gap-2 hover:opacity-80 transition-opacity\"><svg class=\"h-8 w-8 text-blue-500\" viewBox=\"0 0 24 24\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6 4C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20H12C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4H6ZM12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17Z\" fill-opacity=\"0.2\"></path> <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6Z\"></path> <path d=\"M12 8V16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"></path></svg> <span class=\"text-lg font-bold text-white tracking-tight\">Dividr</span></a></div><div class=\"flex items-center gap-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " | Dividr</title><meta name=\"htmx-config\" content=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var3 string
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(middleware.GetHTMXConfig(ctx))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/shared/base.templ`, Line: 13, Col: 76}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><meta name=\"description\" content=\"The spreadsheet bridge for landlords and sole traders. Keep using Excel, but comply with HMRC MTD 2026. Upload, link, file, and clear.\"><link rel=\"icon\" type=\"image/svg+xml\" href=\"/static/img/favicon.svg\"><link rel=\"icon\" type=\"image/png\" href=\"/static/img/favicon.png\"><meta property=\"og:type\" content=\"website\"><meta property=\"og:url\" content=\"https://dividr.co.uk/\"><meta property=\"og:title\" content=\"{ title } | Dividr\"><meta property=\"og:description\" content=\"Keep your process. Automate the filing. The privacy-first MTD bridge for 2026.\"><meta property=\"og:image\" content=\"https://dividr.co.uk/static/img/social-preview.png\"><meta name=\"twitter:card\" content=\"summary_large_image\"><meta property=\"twitter:domain\" content=\"dividr.co.uk\"><meta property=\"twitter:url\" content=\"https://dividr.co.uk/\"><meta name=\"twitter:title\" content=\"{ title } | Dividr\"><meta name=\"twitter:description\" content=\"Keep your process. Automate the filing. The privacy-first MTD bridge for 2026.\"><meta name=\"twitter:image\" content=\"https://dividr.co.uk/static/img/social-preview.png\"><link href=\"/static/css/output.css\" rel=\"stylesheet\"><script src=\"/static/js/htmx.min.js\" nonce=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(middleware.GetNonce(ctx))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/shared/base.templ`, Line: 39, Col: 81}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\"></script><link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap\" rel=\"stylesheet\"></head><body class=\"flex flex-col font-sans antialiased text-zinc-300 selection:bg-blue-500/30 min-h-screen overflow-x-hidden\"><header class=\"fixed w-full top-0 z-50 border-b border-white/5 bg-zinc-950/80 backdrop-blur-md\"><div class=\"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8\"><div class=\"flex h-16 items-center justify-between\"><div class=\"flex items-center gap-2\"><a href=\"/\" class=\"flex items-center gap-2 hover:opacity-80 transition-opacity\"><svg class=\"h-8 w-8 text-blue-500\" viewBox=\"0 0 24 24\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6 4C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20H12C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4H6ZM12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17Z\" fill-opacity=\"0.2\"></path> <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6Z\"></path> <path d=\"M12 8V16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"></path></svg> <span class=\"text-lg font-bold text-white tracking-tight\">Dividr</span></a></div><div class=\"flex items-center gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if !isLoggedIn {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a href=\"/login\" class=\"text-sm font-semibold text-zinc-300 hover:text-white transition-colors\">Log in</a> <a href=\"/signup\" class=\"rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-colors\">Get Started</a>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a href=\"/login\" class=\"text-sm font-semibold text-zinc-300 hover:text-white transition-colors\">Log in</a> <a href=\"/signup\" class=\"rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-colors\">Get Started</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<a href=\"/app/dashboard\" class=\"rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition-colors\">Dashboard</a>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<a href=\"/app/dashboard\" class=\"rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition-colors\">Dashboard</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></div></div></header><main class=\"flex-grow relative flex flex-col pt-16\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div></div></div></header><main class=\"flex-grow relative flex flex-col pt-16\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -66,7 +94,7 @@ func Base(title string, isLoggedIn bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</main><footer class=\"bg-black border-t border-white/5 py-12 mt-auto\"><div class=\"mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6 lg:px-8\"><p class=\"text-xs leading-5 text-zinc-500 text-center md:text-left\">&copy; 2026 Dividr. All rights reserved.</p><div class=\"flex gap-x-8 justify-center\"><a href=\"/privacy\" class=\"text-xs leading-5 text-zinc-500 hover:text-white transition-colors\">Privacy & Data</a> <a href=\"/security\" class=\"text-xs leading-5 text-zinc-500 hover:text-white transition-colors\">Security</a> <a href=\"/terms\" class=\"text-xs leading-5 text-zinc-500 hover:text-white transition-colors\">Terms</a></div></div></footer></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</main><footer class=\"bg-black border-t border-white/5 py-12 mt-auto\"><div class=\"mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6 lg:px-8\"><p class=\"text-xs leading-5 text-zinc-500 text-center md:text-left\">&copy; 2026 Dividr. All rights reserved.</p><div class=\"flex gap-x-8 justify-center\"><a href=\"/privacy\" class=\"text-xs leading-5 text-zinc-500 hover:text-white transition-colors\">Privacy & Data</a> <a href=\"/security\" class=\"text-xs leading-5 text-zinc-500 hover:text-white transition-colors\">Security</a> <a href=\"/terms\" class=\"text-xs leading-5 text-zinc-500 hover:text-white transition-colors\">Terms</a></div></div></footer></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
