@@ -45,6 +45,11 @@ func Run() error {
 		}
 	}()
 
+	if err := database.RunMigrations(sessionDB); err != nil {
+		slog.Error("failed to run session db migrations", "error", err)
+		return err
+	}
+
 	// 3. Initialize Session Manager
 	sm := scs.New()
 	sm.Lifetime = 24 * time.Hour
