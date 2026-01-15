@@ -14,7 +14,7 @@ DB_PASSWORD := $(shell cat docker/secrets/db_password.txt 2>/dev/null || echo ""
 DATABASE_URL ?= postgres://dividr:$(DB_PASSWORD)@localhost:5432/dividr?sslmode=disable
 
 # Phony targets (not real files)
-.PHONY: all build dev test lint tidy fmt vet run clean frontend docker migrate-create migrate-up migrate-down migrate-force docker-build docker-clean generate sqlc css css-watch
+.PHONY: all build dev test lint tidy fmt vet run clean frontend docker migrate-create migrate-down migrate-force docker-build docker-clean generate sqlc css css-watch
 
 # Default target
 all: build
@@ -55,18 +55,15 @@ docker:
 	docker build -t $(DOCKER_TAG) .
 
 # --- Database Migrations ---
+# NOTE: Migrations run automatically on app startup via internal/database/migrate.go
+# These commands are for manual intervention only
 
 ## migrate-create: Create a new migration file. Usage: make migrate-create name=init_schema
 migrate-create:
 	@echo "Creating migration files for: $(name)..."
 	$(MIGRATE) create -ext sql -dir ./internal/database/migrations -seq $(name)
 
-## migrate-up: Apply all up migrations
-migrate-up:
-	@echo "Applying migrations..."
-	$(MIGRATE) -path ./internal/database/migrations -database "$(DATABASE_URL)" up
-
-## migrate-down: Rollback the last migration step
+## migrate-down: Rollback the last migration step (USE WITH CAUTION - manual intervention only)
 migrate-down:
 	@echo "Rolling back last migration..."
 	$(MIGRATE) -path ./internal/database/migrations -database "$(DATABASE_URL)" down 1

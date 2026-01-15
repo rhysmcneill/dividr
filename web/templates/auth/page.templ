@@ -6,12 +6,12 @@ import (
 )
 
 templ Login() {
-    // Pass 'false' for isLoggedIn
     @shared.Base("Log In", false) {
         <div class="flex flex-col flex-grow justify-center px-6 py-12 pt-24 lg:px-8 relative isolate">
-            // --- Background Glow ---
+
+            // --- Background Glow (Refined for Mobile) ---
             <div class="absolute inset-0 -z-10 overflow-hidden">
-                <div class="absolute left-[calc(50%-11rem)] top-[-10rem] h-[50rem] w-[50rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-20 blur-[100px] sm:left-[calc(50%-30rem)]"></div>
+                <div class="absolute left-[calc(50%-10rem)] top-[-5rem] h-[20rem] w-[20rem] sm:left-[calc(50%-11rem)] sm:top-[-10rem] sm:h-[50rem] sm:w-[50rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-15 blur-[60px] sm:blur-[100px]"></div>
             </div>
 
             <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -71,13 +71,12 @@ templ Login() {
 }
 
 templ Signup() {
-    // Pass 'false' for isLoggedIn
     @shared.Base("Sign Up", false) {
         <div class="flex flex-col flex-grow justify-center px-6 py-12 pt-24 lg:px-8 relative isolate">
 
-            // --- Background Glow ---
+            // --- Background Glow (Refined for Mobile) ---
             <div class="absolute inset-0 -z-10 overflow-hidden">
-                <div class="absolute left-[calc(50%+11rem)] top-[-10rem] h-[50rem] w-[50rem] -translate-x-1/2 rotate-[-30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-20 blur-[100px]"></div>
+                <div class="absolute left-[calc(50%)] top-[-5rem] h-[20rem] w-[20rem] sm:left-[calc(50%+11rem)] sm:top-[-10rem] sm:h-[50rem] sm:w-[50rem] -translate-x-1/2 rotate-[-30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-15 blur-[60px] sm:blur-[100px]"></div>
             </div>
 
             <div class="sm:mx-auto sm:w-full sm:max-w-sm">
