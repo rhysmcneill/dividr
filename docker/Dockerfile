@@ -37,7 +37,7 @@ COPY . .
 # We generate Templ files -> Generate SQLC -> Generate CSS -> Build Binary
 # This ensures 'go:embed' finds the CSS and Migration files exactly where it expects them.
 RUN templ generate && \
-    sqlc generate && \
+    sqlc generate -f internal/database/sqlc.yaml && \
     make css && \
     CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH make build
 
