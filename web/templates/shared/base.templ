@@ -59,9 +59,6 @@ templ Base(title string, isLoggedIn bool) {
 
                         // NAV ITEMS
                         <div class="flex items-center gap-4">
-                            // MOBILE FIX: 'hidden sm:block' hides this link on phones to prevent crowding
-                            <a href="/#how-it-works" class="hidden sm:block text-sm font-semibold leading-6 text-white hover:text-blue-400 transition-colors">How it works</a>
-
                             if !isLoggedIn {
                                 <a href="/login" class="text-sm font-semibold text-zinc-300 hover:text-white transition-colors">Log in</a>
                                 <a href="/signup" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-colors">
