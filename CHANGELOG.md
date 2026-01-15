@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## [v0.6.6] - 2026-01-15
+
+**Type:** PATCH
+
+### Changes
+- patch: ignoring templ and css output in .dockerignore
+
+
 ## [v0.6.5] - 2026-01-15
 
 **Type:** PATCH
