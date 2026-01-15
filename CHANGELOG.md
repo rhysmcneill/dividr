@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 
 
+## [v0.6.8] - 2026-01-15
+
+**Type:** PATCH
+
+### Changes
+- patch: improvements to meta html
+- patch: improvements to hero section in landing
+
+
 ## [v0.6.7] - 2026-01-15
 
 **Type:** PATCH
