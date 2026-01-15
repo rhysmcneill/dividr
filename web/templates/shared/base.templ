@@ -3,39 +3,38 @@ package shared
 // Base layout accepts a title, login state, and the content to render inside
 templ Base(title string, isLoggedIn bool) {
     <!DOCTYPE html>
-    <html lang="en" class="scroll-smooth h-auto bg-zinc-950">
+    <html lang="en-GB" class="scroll-smooth h-auto bg-zinc-950">
         <head>
             <meta charset="UTF-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <title>{ title } | Dividr</title>
 
-            // --- SEO ---
-            <meta name="description" content="The bridge for landlords and sole traders who love Excel but need to comply with HMRC MTD 2026. Upload, map, submit, and purge."/>
+            // --- SEO (UK English / Consistent with Landing) ---
+            <meta name="description" content="The spreadsheet bridge for landlords and sole traders. Keep using Excel, but comply with HMRC MTD 2026. Upload, link, file, and clear."/>
 
             // --- Favicons ---
-            // Ensure you add these files to your /static/img/ folder
             <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg" />
             <link rel="icon" type="image/png" href="/static/img/favicon.png" />
 
             // --- OpenGraph (Facebook / LinkedIn / Discord) ---
             <meta property="og:type" content="website" />
-            <meta property="og:url" content="https://dividr.app/" />
+            // FIXED: Domain is now co.uk
+            <meta property="og:url" content="https://dividr.co.uk/" />
             <meta property="og:title" content="{ title } | Dividr" />
-            <meta property="og:description" content="Keep your process. Automate the submission. The privacy-first MTD bridge for 2026." />
-            <meta property="og:image" content="https://dividr.co.uk/static/img/og-social-card.png" />
+            <meta property="og:description" content="Keep your process. Automate the filing. The privacy-first MTD bridge for 2026." />
+            <meta property="og:image" content="https://dividr.co.uk/static/img/social-preview.png" />
 
             // --- Twitter ---
             <meta name="twitter:card" content="summary_large_image" />
             <meta property="twitter:domain" content="dividr.co.uk" />
             <meta property="twitter:url" content="https://dividr.co.uk/" />
             <meta name="twitter:title" content="{ title } | Dividr" />
-            <meta name="twitter:description" content="Keep your process. Automate the submission. The privacy-first MTD bridge for 2026." />
-            <meta name="twitter:image" content="https://dividr.co.uk/static/img/og-social-card.png" />
+            <meta name="twitter:description" content="Keep your process. Automate the filing. The privacy-first MTD bridge for 2026." />
+            <meta name="twitter:image" content="https://dividr.co.uk/static/img/social-preview.png" />
 
             // --- Styles & Scripts ---
             <link href="/static/css/output.css" rel="stylesheet"/>
             <script src="/static/js/htmx.min.js"></script>
-            // Added Inter font to match Landing
             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
         </head>
 
@@ -45,6 +44,7 @@ templ Base(title string, isLoggedIn bool) {
             <header class="fixed w-full top-0 z-50 border-b border-white/5 bg-zinc-950/80 backdrop-blur-md">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 items-center justify-between">
+
                         // LOGO AREA
                         <div class="flex items-center gap-2">
                             <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -59,7 +59,8 @@ templ Base(title string, isLoggedIn bool) {
 
                         // NAV ITEMS
                         <div class="flex items-center gap-4">
-                            <a href="/#how-it-works" class="text-sm font-semibold leading-6 text-white hover:text-blue-400 transition-colors">How it works</a>
+                            // MOBILE FIX: 'hidden sm:block' hides this link on phones to prevent crowding
+                            <a href="/#how-it-works" class="hidden sm:block text-sm font-semibold leading-6 text-white hover:text-blue-400 transition-colors">How it works</a>
 
                             if !isLoggedIn {
                                 <a href="/login" class="text-sm font-semibold text-zinc-300 hover:text-white transition-colors">Log in</a>
@@ -77,15 +78,15 @@ templ Base(title string, isLoggedIn bool) {
             </header>
 
             // --- MAIN CONTENT ---
-            <main class="flex-grow relative flex flex-col pt-0">
+            <main class="flex-grow relative flex flex-col pt-16">
                 { children... }
             </main>
 
             // --- FOOTER ---
             <footer class="bg-black border-t border-white/5 py-12 mt-auto">
                 <div class="mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6 lg:px-8">
-                    <p class="text-xs leading-5 text-zinc-500">&copy; 2026 Dividr. All rights reserved.</p>
-                    <div class="flex gap-x-8">
+                    <p class="text-xs leading-5 text-zinc-500 text-center md:text-left">&copy; 2026 Dividr. All rights reserved.</p>
+                    <div class="flex gap-x-8 justify-center">
                         <a href="/privacy" class="text-xs leading-5 text-zinc-500 hover:text-white transition-colors">Privacy & Data</a>
                         <a href="/security" class="text-xs leading-5 text-zinc-500 hover:text-white transition-colors">Security</a>
                         <a href="/terms" class="text-xs leading-5 text-zinc-500 hover:text-white transition-colors">Terms</a>
