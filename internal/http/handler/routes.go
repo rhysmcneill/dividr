@@ -20,6 +20,7 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 	r.Use(middleware.RequestID) // Add chi's request ID to context
 	r.Use(mw.Logger)            // Log requests with request ID correlation
 	r.Use(mw.SecureHeaders)     // Add security headers
+	r.Use(mw.CSPMiddleware)     // Content Security Policy headers with nonce
 
 	// --- Static Files ---
 	fs := http.FileServer(http.FS(web.Files))

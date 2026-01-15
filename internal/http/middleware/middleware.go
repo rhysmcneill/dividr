@@ -1,12 +1,18 @@
 package middleware
 
 import (
+	"context"
+	"crypto/rand"
+	"encoding/hex"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"runtime/debug"
 
 	"github.com/alexedwards/scs/v2"
 )
+
+const NonceKey contextKey = "cspNonce"
 
 // RecoverPanic catches any code that crashes the thread and returns a 500
 func RecoverPanic(next http.Handler) http.Handler {
@@ -88,4 +94,48 @@ func ContentTypeXML(next http.Handler) http.Handler {
 		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 		next.ServeHTTP(w, r)
 	})
+}
+
+// CSPMiddleware generates a unique "Nonce" (token) for every request.
+// It allows HTMX inline styles to work securely.
+func CSPMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// 1. Generate a random 16-byte hex string
+		bytes := make([]byte, 16)
+		if _, err := rand.Read(bytes); err != nil {
+			slog.Error("failed to generate csp nonce", "error", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		nonce := hex.EncodeToString(bytes)
+
+		// 2. Build the dynamic CSP header
+		// We tell the browser: "Allow scripts and styles ONLY if they match this nonce"
+		csp := fmt.Sprintf(
+			"default-src 'self'; "+
+				"style-src 'self' 'nonce-%s' fonts.googleapis.com; "+
+				"script-src 'self' 'nonce-%s'; "+
+				"font-src 'self' fonts.gstatic.com",
+			nonce, nonce,
+		)
+
+		w.Header().Set("Content-Security-Policy", csp)
+
+		// 3. Store the nonce in the context so your Templ files can read it
+		ctx := context.WithValue(r.Context(), NonceKey, nonce)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+// GetNonce is a helper function your Templates will call to get the token.
+func GetNonce(ctx context.Context) string {
+	if nonce, ok := ctx.Value(NonceKey).(string); ok {
+		return nonce
+	}
+	return ""
+}
+
+// GetHTMXConfig returns the HTMX config meta content with the CSP nonce
+func GetHTMXConfig(ctx context.Context) string {
+	return fmt.Sprintf(`{"inlineStyleNonce":"%s"}`, GetNonce(ctx))
 }
