@@ -10,9 +10,9 @@ CREATE TABLE users (
 );
 
 -- 2. SESSIONS
-CREATE TABLE sessions (
+CREATE TABLE IF NOT EXISTS sessions (
     token TEXT PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    data BYTEA NOT NULL,
     expiry TIMESTAMPTZ NOT NULL
 );
 
@@ -106,3 +106,4 @@ CREATE TABLE audit_events (
 CREATE INDEX idx_transactions_user_status_created ON transactions (user_id, status, created_at DESC);
 CREATE INDEX idx_transactions_submission ON transactions (user_id, status, stream, bank_date);
 CREATE UNIQUE INDEX uniq_transactions_user_rowhash ON transactions (user_id, source_row_hash) WHERE source_row_hash IS NOT NULL;
+CREATE INDEX IF NOT EXISTS sessions_expiry_idx ON sessions (expiry);
