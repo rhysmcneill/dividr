@@ -43,7 +43,7 @@ func NotFound() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex flex-col flex-grow items-center justify-center py-24 px-4 sm:px-6 lg:px-8 text-center\"><h1 class=\"text-9xl font-black text-white/10\">404</h1><h2 class=\"mt-4 text-3xl font-bold tracking-tight text-white\">Page not found</h2><p class=\"mt-2 text-lg text-zinc-400\">Sorry, we couldn’t find the page you’re looking for.</p><div class=\"mt-10\"><a href=\"/\" class=\"rounded-full bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600\">Back to home</a></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex flex-col flex-grow items-center justify-center py-24 px-6 sm:px-6 lg:px-8 text-center relative isolate\"><div class=\"absolute inset-0 -z-10 overflow-hidden\"><div class=\"absolute left-[calc(50%-10rem)] top-[20%] h-[20rem] w-[20rem] sm:left-[calc(50%-15rem)] sm:h-[40rem] sm:w-[40rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-10 blur-[60px] sm:blur-[100px]\"></div></div><h1 class=\"text-6xl sm:text-9xl font-black text-white/10\">404</h1><h2 class=\"mt-4 text-2xl sm:text-3xl font-bold tracking-tight text-white\">Page not found</h2><p class=\"mt-2 text-base sm:text-lg text-zinc-400\">Sorry, we couldn’t find the page you’re looking for.</p><div class=\"mt-10\"><a href=\"/\" class=\"rounded-full bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors\">Back to home</a></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -90,7 +90,7 @@ func ServerError(message string) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col flex-grow items-center justify-center py-24 px-4 sm:px-6 lg:px-8 text-center\"><h1 class=\"text-9xl font-black text-red-500/20\">500</h1><h2 class=\"mt-4 text-3xl font-bold tracking-tight text-white\">Something went wrong</h2><p class=\"mt-2 text-lg text-zinc-400\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col flex-grow items-center justify-center py-24 px-6 sm:px-6 lg:px-8 text-center relative isolate\"><div class=\"absolute inset-0 -z-10 overflow-hidden\"><div class=\"absolute left-[calc(50%+5rem)] top-[20%] h-[20rem] w-[20rem] sm:left-[calc(50%+15rem)] sm:h-[40rem] sm:w-[40rem] -translate-x-1/2 rotate-[-30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-10 blur-[60px] sm:blur-[100px]\"></div></div><h1 class=\"text-6xl sm:text-9xl font-black text-red-500/10\">500</h1><h2 class=\"mt-4 text-2xl sm:text-3xl font-bold tracking-tight text-white\">Something went wrong</h2><p class=\"mt-2 text-base sm:text-lg text-zinc-400 max-w-md mx-auto\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -98,7 +98,7 @@ func ServerError(message string) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/errors/page.templ`, Line: 29, Col: 29}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/errors/page.templ`, Line: 45, Col: 29}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -110,7 +110,7 @@ func ServerError(message string) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</p><div class=\"mt-10\"><a href=\"/\" class=\"text-sm font-semibold leading-7 text-blue-400 hover:text-blue-300\"><span aria-hidden=\"true\">&larr;</span> Back to home</a></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</p><div class=\"mt-10\"><a href=\"/\" class=\"rounded-full bg-white/10 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-colors\">Back to home</a></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

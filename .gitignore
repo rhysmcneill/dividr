@@ -6,6 +6,9 @@
 *.so
 *.dylib
 
+# Temporary build files
+tmp/
+
 # Build output
 /vendor/
 
