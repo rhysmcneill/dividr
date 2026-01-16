@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## [v0.6.11] - 2026-01-16
+
+**Type:** PATCH
+
+### Changes
+- patch: making social image available and refactoring landing glow
+
+
 ## [v0.6.10] - 2026-01-15
 
 **Type:** PATCH
