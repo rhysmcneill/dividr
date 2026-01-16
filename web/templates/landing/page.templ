@@ -8,7 +8,7 @@ templ Page() {
             <div class="relative pt-14 pb-16 sm:pb-20">
                 // Background Glow
                 <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
-                    <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
+                    <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-25 sm:opacity-25 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
                 </div>
 
                 <div class="mx-auto max-w-2xl py-24 sm:py-48 text-center px-4">
@@ -127,8 +127,14 @@ templ Page() {
 
             // --- WRAPPER ---
             <div class="relative isolate overflow-hidden bg-black">
-                <div class="absolute inset-x-0 top-0 -z-10 transform-gpu overflow-hidden opacity-30 blur-3xl" aria-hidden="true">
-                    <div class="relative left-[calc(50%-20rem)] aspect-[1155/678] w-[50rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-40 sm:left-[calc(50%-35rem)] sm:w-[75rem]"></div>
+                // 1. REMOVED 'opacity-30' from this parent line:
+                <div class="absolute inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
+
+                    // 2. INCREASED opacity here (60% on mobile, drops to 30% on desktop):
+                    <div class="relative left-[calc(50%-20rem)] aspect-[1155/678] w-[50rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb]
+                        opacity-30 sm:opacity-30
+                        sm:left-[calc(50%-35rem)] sm:w-[75rem]">
+                    </div>
                 </div>
 
                 // --- 4. WORKFLOW SECTION ---
