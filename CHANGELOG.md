@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## [v0.7.1] - 2026-01-24
+
+**Type:** PATCH
+
+### Changes
+- patch: Adding make generate to dockerfile to ensure css builds correctly
+
+
 ## [v0.7.0] - 2026-01-24
 
 **Type:** MINOR
