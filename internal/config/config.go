@@ -12,30 +12,33 @@ import (
 )
 
 type Config struct {
-	AppEnv        string
-	Port          string
-	DatabaseURL   string
-	LogLevel      string
-	DBMaxConns    int           // Default: 10
-	DBMinConns    int           // Default: 2
-	DBMaxConnIdle time.Duration // Default: 30 minutes
+	AppEnv           string
+	Port             string
+	DatabaseURL      string
+	LogLevel         string
+	DBMaxConns       int           // Default: 10
+	DBMinConns       int           // Default: 2
+	DBMaxConnIdle    time.Duration // Default: 30 minutes
+	HMRCRedirectURL  string
+	HMRCClientID     string
+	HMRCClientSecret string
 }
 
 func Load() *Config {
-	// Load .env file if it exists
-	err := godotenv.Load()
-	if err != nil {
-		slog.Warn(".env file not found, relying on environment variables")
-	}
+	// Load .env file if it exists (silently fails if not found)
+	_ = godotenv.Load()
 
 	return &Config{
-		AppEnv:        getEnv("APP_ENV", "dev"),
-		Port:          getEnv("PORT", "8080"),
-		DatabaseURL:   buildDatabaseURL(),
-		LogLevel:      getEnv("LOG_LEVEL", "debug"),
-		DBMaxConns:    getEnvInt("DB_MAX_CONNS", 10),
-		DBMinConns:    getEnvInt("DB_MIN_CONNS", 2),
-		DBMaxConnIdle: getEnvDuration("DB_MAX_CONN_IDLE", 30*time.Minute),
+		AppEnv:           getEnv("APP_ENV", "dev"),
+		Port:             getEnv("PORT", "8080"),
+		DatabaseURL:      buildDatabaseURL(),
+		LogLevel:         getEnv("LOG_LEVEL", "DEBUG"),
+		DBMaxConns:       getEnvInt("DB_MAX_CONNS", 10),
+		DBMinConns:       getEnvInt("DB_MIN_CONNS", 2),
+		DBMaxConnIdle:    getEnvDuration("DB_MAX_CONN_IDLE", 30*time.Minute),
+		HMRCRedirectURL:  getEnv("HMRC_REDIRECT_URL", "http://localhost:8080/auth/hmrc/callback"),
+		HMRCClientID:     getEnv("HMRC_CLIENT_ID", ""),
+		HMRCClientSecret: getHMRCCLientSecret(),
 	}
 }
 
@@ -54,6 +57,7 @@ func (c *Config) LogValue() slog.Value {
 		slog.String("Port", c.Port),
 		slog.String("LogLevel", c.LogLevel),
 		slog.String("DatabaseURL", "[REDACTED]"), // Hide the URL
+		slog.String("HMRCRedirectURL", c.HMRCRedirectURL),
 	)
 }
 
@@ -80,13 +84,32 @@ func getPassword() string {
 	// Try Docker secret first
 	secretPath := "/run/secrets/db_password"
 	if data, err := os.ReadFile(secretPath); err == nil {
-		slog.Info("database password loaded from Docker secret")
 		return strings.TrimSpace(string(data))
 	}
 
 	// Fallback to env var
-	slog.Info("database password loaded from environment variable")
 	return getEnv("DB_PASSWORD", "dividr")
+}
+
+func getHMRCCLientSecret() string {
+	// Try Docker secret first
+	secretPath := "/run/secrets/hmrc_client_secret"
+	if data, err := os.ReadFile(secretPath); err == nil {
+		return strings.TrimSpace(string(data))
+	}
+
+	// Try local file for development convenience
+	localSecretPath := "docker/secrets/.hmrc_client_secret"
+	if data, err := os.ReadFile(localSecretPath); err == nil {
+		return strings.TrimSpace(string(data))
+	}
+	cwd, _ := os.Getwd()
+	slog.Info("debug: attempting to load secret",
+		"current_dir", cwd,
+		"target_path", localSecretPath,
+	)
+	// Fallback to env var
+	return getEnv("HMRC_CLIENT_SECRET", "")
 }
 
 // getEnvInt reads an integer from env or returns default

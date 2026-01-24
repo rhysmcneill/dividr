@@ -17,6 +17,17 @@ type AuditEvent struct {
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
+type HmrcConnection struct {
+	ID           pgtype.UUID        `json:"id"`
+	UserID       pgtype.UUID        `json:"user_id"`
+	MtdID        string             `json:"mtd_id"`
+	AccessToken  string             `json:"access_token"`
+	RefreshToken string             `json:"refresh_token"`
+	TokenExpiry  pgtype.Timestamptz `json:"token_expiry"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt    pgtype.Timestamptz `json:"updated_at"`
+}
+
 type MappingProfile struct {
 	ID           pgtype.UUID        `json:"id"`
 	UserID       pgtype.UUID        `json:"user_id"`
