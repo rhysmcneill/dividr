@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 
 
+## [v0.7.0] - 2026-01-24
+
+**Type:** MINOR
+
+### Changes
+- minor: IMplementing OAuth handshake between Dividr and HMRC, including redirects. Added UI components for insert MTDID and NINO. Finally implemented a refresh token so users start connected to Dividr indefinitely
+- (minor): IMplementing OAuth handshake between Dividr and HMRC, including redirects. Added UI components for insert MTDID and NINO. Finally implemented a refresh token so users start connected to Dividr indefinitely
+
+
 ## [v0.6.11] - 2026-01-16
 
 **Type:** PATCH
