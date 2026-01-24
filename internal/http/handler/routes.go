@@ -75,7 +75,7 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 		// r.Post("/login", h.LoginSubmit)
 		// Private API routes
 		r.Group(func(r chi.Router) {
-			// r.Use(h.RequireToken) // <--- THIS is what makes it private later
+			// r.Use(h.RequireToken)
 
 			// r.Get("/me", h.handleGetProfile)
 			// r.Get("/dashboard", h.Dashboard)
