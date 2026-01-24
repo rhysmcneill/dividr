@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/alexedwards/scs/v2"
+	"github.com/google/uuid"
 	"github.com/rhysmcneill/dividr/internal/config"
 	"github.com/rhysmcneill/dividr/internal/database"
 	"github.com/rhysmcneill/dividr/internal/errs"
@@ -22,7 +23,7 @@ import (
 type Handler struct {
 	DB             *database.Service
 	Config         *config.Config
-	sessionManager *scs.SessionManager
+	SessionManager *scs.SessionManager
 	RobotsData     []byte
 	SitemapData    []byte
 }
@@ -44,7 +45,7 @@ func New(db *database.Service, cfg *config.Config, sessionManager *scs.SessionMa
 	return &Handler{
 		DB:             db,
 		Config:         cfg,
-		sessionManager: sessionManager,
+		SessionManager: sessionManager,
 		RobotsData:     robots,
 		SitemapData:    sitemap,
 	}
@@ -73,8 +74,35 @@ func (h *Handler) handleLanding(w http.ResponseWriter, r *http.Request) {
 
 // handleDashboard renders the main app view
 func (h *Handler) handleDashboard(w http.ResponseWriter, r *http.Request) {
-	// 200 OK
-	if err := render.Component(w, r, http.StatusOK, dashboard.Page()); err != nil {
+	ctx := r.Context()
+
+	// 1. Get User ID from session
+	// (The RequireAuth middleware guarantees this exists, so we can be confident)
+	userIDStr := h.SessionManager.GetString(ctx, "userID")
+	userID, err := uuid.Parse(userIDStr)
+	if err != nil {
+		// Should rarely happen if middleware is working, but safety first
+		slog.Error("invalid user_id in session", "error", err)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	// 2. Check Database for HMRC Connection
+	isConnected := false
+
+	// Convert UUID to pgtype (assuming you use pgx/v5 and sqlc)
+	// If you use a different driver, this might just be 'userID'
+	conn, err := h.DB.GetHMRCConnectionByUserID(ctx, database.UUIDToPgtype(userID))
+
+	// If err is nil, we found a record!
+	if err == nil && conn.MtdID != "" {
+		isConnected = true
+	}
+	// We ignore 'sql.ErrNoRows' because that just means isConnected = false (default)
+
+	// 3. Render Dashboard with State
+	// We pass the 'isConnected' flag to the template
+	if err := render.Component(w, r, http.StatusOK, dashboard.Page(isConnected)); err != nil {
 		h.respondWithError(w, r, err)
 	}
 }

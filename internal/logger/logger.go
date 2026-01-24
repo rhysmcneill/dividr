@@ -4,16 +4,18 @@ import (
 	"context"
 	"log/slog"
 	"os"
+
+	"github.com/rhysmcneill/dividr/internal/config"
 )
 
 // Init sets up the global logger.
 // Call this once in main.go.
-func Init(env string) {
+func Init(cfg *config.Config) {
 	opts := &slog.HandlerOptions{
 		// Add source file info only in dev (it's expensive in prod)
-		AddSource: env == "dev",
+		//AddSource: cfg.AppEnv == "dev",
 		// Set log level based on env
-		Level: logLevel(env),
+		Level: logLevel(cfg),
 		// ReplaceAttr is used to scrub or rename fields
 		ReplaceAttr: replaceAttr,
 	}
@@ -29,11 +31,19 @@ func Init(env string) {
 	slog.SetDefault(logger)
 }
 
-func logLevel(env string) slog.Level {
-	if env == "prod" {
+func logLevel(cfg *config.Config) slog.Level {
+	switch cfg.LogLevel {
+	case "DEBUG":
+		return slog.LevelDebug
+	case "INFO":
 		return slog.LevelInfo
+	case "WARN", "WARNING":
+		return slog.LevelWarn
+	case "ERROR":
+		return slog.LevelError
+	default:
+		return slog.LevelDebug
 	}
-	return slog.LevelDebug
 }
 
 // replaceAttr is your "Sanitization" layer.

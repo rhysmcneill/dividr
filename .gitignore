@@ -27,5 +27,8 @@ tmp/
 # Docker secrets
 docker/secrets/*.txt
 
+# HMRC files
+docs/*.json
+
 # CSS
 web/static/css/output.css
