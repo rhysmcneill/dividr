@@ -34,7 +34,8 @@ RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/downlo
 COPY . .
 
 # 6. Run the Build Pipeline
-RUN make css && \
+RUN make generate && \
+    make css && \
     CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH make build
 
 # ==============================================================================
