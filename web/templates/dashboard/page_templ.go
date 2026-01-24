@@ -13,7 +13,7 @@ import (
 	"github.com/rhysmcneill/dividr/web/templates/shared"
 )
 
-func Page() templ.Component {
+func Page(isConnected bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -46,41 +46,32 @@ func Page() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"py-10\"><header><div class=\"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex justify-between items-center\"><h1 class=\"text-3xl font-bold leading-tight tracking-tight text-gray-900\">Dashboard</h1></div></header><main><div class=\"mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"relative isolate min-h-[calc(100vh-5rem)]\"><div class=\"absolute inset-0 -z-10 overflow-hidden pointer-events-none\"><div class=\"absolute left-[calc(50%-10rem)] top-[-5rem] h-[20rem] w-[20rem] sm:left-[calc(50%-15rem)] sm:top-[-10rem] sm:h-[40rem] sm:w-[40rem] -translate-x-1/2 rotate-[20deg] bg-gradient-to-tr from-[#0284c7] to-[#2563eb] opacity-10 blur-[60px] sm:blur-[100px]\"></div></div><div class=\"py-10\"><header><div class=\"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex justify-between items-center\"><h1 class=\"text-3xl font-bold leading-tight tracking-tight text-white\">Dashboard</h1></div></header><main><div class=\"mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var3 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-				if !templ_7745c5c3_IsBuffer {
-					defer func() {
-						templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-						if templ_7745c5c3_Err == nil {
-							templ_7745c5c3_Err = templ_7745c5c3_BufErr
-						}
-					}()
-				}
-				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<h3 class=\"text-base font-semibold leading-6 text-gray-900\">Connect HMRC</h3><div class=\"mt-2 max-w-xl text-sm text-gray-500\"><p>Import your tax details directly to get started.</p></div><div class=\"mt-5\">")
+			if isConnected {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <div class=\"relative overflow-hidden bg-gradient-to-br from-emerald-900/40 to-green-900/20 border border-emerald-500/30 rounded-xl p-4 sm:p-6 backdrop-blur-md shadow-[0_0_40px_-10px_rgba(16,185,129,0.15)] group transition-all duration-500 hover:border-emerald-500/50\"><div class=\"absolute top-0 right-0 -mt-10 -mr-10 h-24 w-24 bg-emerald-500/20 blur-[40px] rounded-full pointer-events-none\"></div><div class=\"flex items-start gap-3 sm:gap-5 relative z-10\"><div class=\"p-2 bg-emerald-500/10 rounded-lg ring-1 ring-emerald-500/20 group-hover:bg-emerald-500/20 transition-colors shrink-0\"><svg class=\"h-5 w-5 sm:h-6 sm:w-6 text-emerald-400\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z\"></path></svg></div><div class=\"flex-1 min-w-0\"><div class=\"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4\"><div><h3 class=\"text-base sm:text-lg font-bold text-white tracking-tight\">HMRC Connected</h3><p class=\"mt-1 text-sm text-emerald-200/60 leading-snug\">Ready to process your returns.</p></div><div class=\"mt-2 sm:mt-0 flex items-center gap-1.5 shrink-0\"><span class=\"relative flex h-1.5 w-1.5\"><span class=\"animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75\"></span> <span class=\"relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500\"></span></span> <span class=\"text-[10px] font-medium text-emerald-400 uppercase tracking-wider\">Active Connection</span></div></div></div></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = components.Button("Connect Now", nil, true).Render(ctx, templ_7745c5c3_Buffer)
+			} else {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " <div class=\"bg-zinc-900/40 border border-white/5 rounded-xl p-4 sm:p-6 backdrop-blur-sm transition-all duration-300 hover:border-blue-500/30 hover:shadow-[0_0_30px_-5px_rgba(37,99,235,0.15)] group\"><div class=\"flex items-start gap-3 sm:gap-5\"><div class=\"p-2 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors shrink-0\"><svg class=\"h-5 w-5 sm:h-6 sm:w-6 text-blue-400\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z\"></path></svg></div><div class=\"flex-1\"><div class=\"flex flex-col sm:flex-row sm:items-center justify-between gap-3\"><div><h3 class=\"text-base sm:text-lg font-semibold text-white\">Connect HMRC</h3><p class=\"mt-0.5 text-sm text-zinc-400\">Import your tax details to get started.</p></div><div class=\"mt-2 sm:mt-0\"><a href=\"/auth/hmrc/details\" class=\"inline-block\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div>")
+				templ_7745c5c3_Err = components.Button("Connect", templ.Attributes{
+					"class": "bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold py-1.5 px-3 rounded-md shadow-sm transition-colors",
+				}, true).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				return nil
-			})
-			templ_7745c5c3_Err = components.Card().Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</a></div></div></div></div></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></main></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></main></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
