@@ -18,11 +18,13 @@ type Querier interface {
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	CreateWaitlistEntry(ctx context.Context, email string) (Waitlist, error)
+	DeleteHMRCConnection(ctx context.Context, userID pgtype.UUID) error
 	DeleteSession(ctx context.Context, token string) error
 	// The Purge. Runs after submission.
 	DeleteTransactionsForPeriod(ctx context.Context, arg DeleteTransactionsForPeriodParams) error
 	// UPDATED: Now counts Trade and Property separately
 	GetDashboardStats(ctx context.Context, userID pgtype.UUID) (GetDashboardStatsRow, error)
+	GetHMRCConnectionByUserID(ctx context.Context, userID pgtype.UUID) (HmrcConnection, error)
 	GetOAuthToken(ctx context.Context, arg GetOAuthTokenParams) (OauthToken, error)
 	GetSession(ctx context.Context, token string) (Session, error)
 	// Fetches business data for a SPECIFIC stream (Trade OR Property)
@@ -36,6 +38,7 @@ type Querier interface {
 	MarkTransactionPersonal(ctx context.Context, arg MarkTransactionPersonalParams) (Transaction, error)
 	// The core "Swipe Right" action.
 	UpdateTransactionCategory(ctx context.Context, arg UpdateTransactionCategoryParams) (Transaction, error)
+	UpsertHMRCConnection(ctx context.Context, arg UpsertHMRCConnectionParams) (UpsertHMRCConnectionRow, error)
 	// Saves or updates the token. If user already has one, we overwrite it.
 	// actually, standard practice is usually finding by user_id. Let's stick to simple Insert/Update for now.
 	UpsertOAuthToken(ctx context.Context, arg UpsertOAuthTokenParams) (OauthToken, error)

@@ -23,7 +23,7 @@ import (
 
 func Run() error {
 	cfg := config.Load()
-	logger.Init(cfg.LogLevel)
+	logger.Init(cfg)
 	slog.Info("Configuration initialized", "config", cfg.LogValue())
 
 	// 1. Main App Database (PGX Pool)

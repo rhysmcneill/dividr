@@ -6,6 +6,8 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rhysmcneill/dividr/internal/config"
 )
@@ -64,5 +66,21 @@ func (s *Service) Health() map[string]string {
 	return map[string]string{
 		"status":  status,
 		"db_type": "postgres",
+	}
+}
+
+// UUIDToPgtype converts a standard uuid.UUID to pgtype.UUID
+func UUIDToPgtype(id uuid.UUID) pgtype.UUID {
+	return pgtype.UUID{
+		Bytes: id,
+		Valid: true,
+	}
+}
+
+// TimeToPgtype converts a standard time.Time to pgtype.Timestamptz
+func TimeToPgtype(t time.Time) pgtype.Timestamptz {
+	return pgtype.Timestamptz{
+		Time:  t,
+		Valid: true,
 	}
 }

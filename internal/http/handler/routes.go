@@ -52,6 +52,20 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 
 	r.Post("/logout", h.handleLogout)
 
+	// --- HMRC Connection Flow (Private - Requires Session) ---
+	r.Route("/auth/hmrc", func(r chi.Router) {
+		// Protect all these routes: User must be logged into Dividr first
+		r.Use(mw.RequireAuth(h.SessionManager))
+
+		// Step 1: Input Form (Enter NINO + MTD ID)
+		r.Get("/details", h.handleAuthDetailsForm)
+		r.Post("/details", h.handleAuthDetailsSubmit)
+
+		// Step 2: OAuth Handshake
+		r.Get("/start", h.handleAuthStart)
+		r.Get("/callback", h.handleAuthCallback)
+	})
+
 	// --- API V1 Routes ---
 	r.Route("/api/v1", func(r chi.Router) {
 
@@ -71,13 +85,13 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 
 	// The App (Strictly Private routes - Requires Session)
 	r.Route("/app", func(r chi.Router) {
-		r.Use(mw.RequireAuth(h.sessionManager))
+		r.Use(mw.RequireAuth(h.SessionManager))
 		r.Get("/dashboard", h.handleDashboard)
 	})
 
 	// C. HX Group (Fragments Only - Requires Session Later)
 	r.Route("/hx", func(r chi.Router) {
-		r.Use(mw.RequireAuth(h.sessionManager))
+		r.Use(mw.RequireAuth(h.SessionManager))
 		// TODO: r.Get("/summary", h.handleHXSummary)
 	})
 

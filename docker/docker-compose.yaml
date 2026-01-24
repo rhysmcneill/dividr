@@ -2,7 +2,9 @@ version: '3.8'
 
 secrets:
   db_password:
-    file: ./secrets/db_password.txt
+    file: ./secrets/.db_password.txt
+  hmrc_client_secret:
+    file: ./secrets/.hmrc_client_secret.txt
 
 services:
   postgres:
@@ -41,6 +43,7 @@ services:
   #     DB_NAME: dividr
   #   secrets:
   #     - db_password
+  #     - hmrc_client_secret
   #   ports:
   #     - "8080:8080"
   #   depends_on:

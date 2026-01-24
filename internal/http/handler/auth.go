@@ -56,12 +56,12 @@ func (h *Handler) handleSignupSubmit(w http.ResponseWriter, r *http.Request) {
 
 	// 4. Log them in automatically
 	// "RenewToken" is a security best practice when privilege changes (prevents fixation attacks)
-	if err := h.sessionManager.RenewToken(r.Context()); err != nil {
+	if err := h.SessionManager.RenewToken(r.Context()); err != nil {
 		h.respondWithError(w, r, err)
 		return
 	}
 	// Store User ID in session
-	h.sessionManager.Put(r.Context(), "userID", user.ID.String())
+	h.SessionManager.Put(r.Context(), "userID", user.ID.String())
 
 	// 5. Redirect to Dashboard
 	http.Redirect(w, r, "/app/dashboard", http.StatusSeeOther)
@@ -92,18 +92,17 @@ func (h *Handler) handleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 3. Create Session
-	if err := h.sessionManager.RenewToken(r.Context()); err != nil {
+	if err := h.SessionManager.RenewToken(r.Context()); err != nil {
 		h.respondWithError(w, r, err)
 		return
 	}
-	h.sessionManager.Put(r.Context(), "userID", user.ID.String())
-
+	h.SessionManager.Put(r.Context(), "userID", user.ID.String())
 	http.Redirect(w, r, "/app/dashboard", http.StatusSeeOther)
 }
 
 func (h *Handler) handleLogout(w http.ResponseWriter, r *http.Request) {
 	// Destroy session
-	if err := h.sessionManager.Destroy(r.Context()); err != nil {
+	if err := h.SessionManager.Destroy(r.Context()); err != nil {
 		h.respondWithError(w, r, err)
 		return
 	}
