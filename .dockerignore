@@ -18,7 +18,7 @@ node_modules/
 vendor/
 
 # Docker secrets
-docker/secrets/*.txt
+docker/secrets/*
 
 # CSS output (generated file)
 web/static/css/output.css

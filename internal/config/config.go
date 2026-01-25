@@ -12,16 +12,17 @@ import (
 )
 
 type Config struct {
-	AppEnv           string
-	Port             string
-	DatabaseURL      string
-	LogLevel         string
-	DBMaxConns       int           // Default: 10
-	DBMinConns       int           // Default: 2
-	DBMaxConnIdle    time.Duration // Default: 30 minutes
-	HMRCRedirectURL  string
-	HMRCClientID     string
-	HMRCClientSecret string
+	AppEnv             string
+	Port               string
+	DatabaseURL        string
+	LogLevel           string
+	DBMaxConns         int           // Default: 10
+	DBMinConns         int           // Default: 2
+	DBMaxConnIdle      time.Duration // Default: 30 minutes
+	HMRCRedirectURL    string
+	HMRCClientID       string
+	HMRCClientSecret   string
+	TokenEncryptionKey string
 }
 
 func Load() *Config {
@@ -29,16 +30,17 @@ func Load() *Config {
 	_ = godotenv.Load()
 
 	return &Config{
-		AppEnv:           getEnv("APP_ENV", "dev"),
-		Port:             getEnv("PORT", "8080"),
-		DatabaseURL:      buildDatabaseURL(),
-		LogLevel:         getEnv("LOG_LEVEL", "DEBUG"),
-		DBMaxConns:       getEnvInt("DB_MAX_CONNS", 10),
-		DBMinConns:       getEnvInt("DB_MIN_CONNS", 2),
-		DBMaxConnIdle:    getEnvDuration("DB_MAX_CONN_IDLE", 30*time.Minute),
-		HMRCRedirectURL:  getEnv("HMRC_REDIRECT_URL", "http://localhost:8080/auth/hmrc/callback"),
-		HMRCClientID:     getEnv("HMRC_CLIENT_ID", ""),
-		HMRCClientSecret: getHMRCCLientSecret(),
+		AppEnv:             getEnv("APP_ENV", "dev"),
+		Port:               getEnv("PORT", "8080"),
+		DatabaseURL:        buildDatabaseURL(),
+		LogLevel:           getEnv("LOG_LEVEL", "DEBUG"),
+		DBMaxConns:         getEnvInt("DB_MAX_CONNS", 10),
+		DBMinConns:         getEnvInt("DB_MIN_CONNS", 2),
+		DBMaxConnIdle:      getEnvDuration("DB_MAX_CONN_IDLE", 30*time.Minute),
+		HMRCRedirectURL:    getEnv("HMRC_REDIRECT_URL", "http://localhost:8080/auth/hmrc/callback"),
+		HMRCClientID:       getEnv("HMRC_CLIENT_ID", ""),
+		HMRCClientSecret:   getHMRCCLientSecret(),
+		TokenEncryptionKey: getCryptoKey(),
 	}
 }
 
@@ -110,6 +112,27 @@ func getHMRCCLientSecret() string {
 	)
 	// Fallback to env var
 	return getEnv("HMRC_CLIENT_SECRET", "")
+}
+
+func getCryptoKey() string {
+	// Try Docker secret first
+	secretPath := "/run/secrets/crypto_key"
+	if data, err := os.ReadFile(secretPath); err == nil {
+		return strings.TrimSpace(string(data))
+	}
+
+	// Try local file for development convenience
+	localSecretPath := "docker/secrets/.crypto_key"
+	if data, err := os.ReadFile(localSecretPath); err == nil {
+		return strings.TrimSpace(string(data))
+	}
+	cwd, _ := os.Getwd()
+	slog.Info("debug: attempting to load secret",
+		"current_dir", cwd,
+		"target_path", localSecretPath,
+	)
+	// Fallback to env var
+	return getEnv("TOKEN_ENCRYPTION_KEY", "")
 }
 
 // getEnvInt reads an integer from env or returns default

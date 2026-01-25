@@ -16,11 +16,12 @@ func (h *Handler) RegisterRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
 	// Global Middleware (applied in order)
-	r.Use(mw.RecoverPanic)      // Catch panics and log stack traces
-	r.Use(middleware.RequestID) // Add chi's request ID to context
-	r.Use(mw.Logger)            // Log requests with request ID correlation
-	r.Use(mw.SecureHeaders)     // Add security headers
-	r.Use(mw.CSPMiddleware)     // Content Security Policy headers with nonce
+	r.Use(mw.RecoverPanic)              // Catch panics and log stack traces
+	r.Use(middleware.RequestID)         // Add chi's request ID to context
+	r.Use(mw.Logger)                    // Log requests with request ID correlation
+	r.Use(mw.SecureHeaders)             // Add security headers
+	r.Use(mw.CSPMiddleware)             // Content Security Policy headers with nonce
+	r.Use(mw.FraudPreventionMiddleware) // HMRC Fraud Prevention headers
 
 	// --- Static Files ---
 	fs := http.FileServer(http.FS(web.Files))

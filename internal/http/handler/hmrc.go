@@ -106,7 +106,7 @@ func (h *Handler) handleAuthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 2. Get the Authorization Code
+	// 2. Get the Authorisation Code
 	code := r.URL.Query().Get("code")
 	if code == "" {
 		slog.Warn("oauth callback failed: no code received")
@@ -124,7 +124,6 @@ func (h *Handler) handleAuthCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 4. Check User Session (User must be logged in to Dividr)
-	// The middleware ensures this usually, but we double-check because we need the UUID.
 	userIDStr := h.SessionManager.GetString(ctx, "userID")
 	if userIDStr == "" {
 		slog.Warn("hmrc callback received for unauthenticated user")
@@ -146,17 +145,33 @@ func (h *Handler) handleAuthCallback(w http.ResponseWriter, r *http.Request) {
 	// If these are missing, the user probably waited too long or opened a new tab.
 	if userNino == "" || mtdID == "" {
 		slog.Warn("callback session missing nino/mtd_id", "user_id", userID)
-		// Send them back to the input form to try again
 		http.Redirect(w, r, "/auth/hmrc/details", http.StatusSeeOther)
 		return
 	}
 
-	// 6. Save to DB
+	// -- ENCRYPTION START --
+	// 6. Encrypt Tokens before storage
+	encryptedAccessToken, err := hmrc.Encrypt(token.AccessToken, h.Config.TokenEncryptionKey)
+	if err != nil {
+		slog.Error("failed to encrypt access token", "error", err)
+		http.Error(w, "Security error", http.StatusInternalServerError)
+		return
+	}
+
+	encryptedRefreshToken, err := hmrc.Encrypt(token.RefreshToken, h.Config.TokenEncryptionKey)
+	if err != nil {
+		slog.Error("failed to encrypt refresh token", "error", err)
+		http.Error(w, "Security error", http.StatusInternalServerError)
+		return
+	}
+	// -- ENCRYPTION END --
+
+	// 7. Save to DB (Now storing encrypted strings)
 	_, err = h.DB.UpsertHMRCConnection(ctx, database.UpsertHMRCConnectionParams{
 		UserID:       database.UUIDToPgtype(userID),
 		MtdID:        mtdID,
-		AccessToken:  token.AccessToken,
-		RefreshToken: token.RefreshToken,
+		AccessToken:  encryptedAccessToken,
+		RefreshToken: encryptedRefreshToken,
 		TokenExpiry:  database.TimeToPgtype(token.Expiry),
 	})
 
@@ -166,12 +181,10 @@ func (h *Handler) handleAuthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 7. Cleanup & Logging
-	// Remove the temporary inputs now that we have safely stored them in the DB
+	// 8. Cleanup & Logging
 	h.SessionManager.Remove(ctx, "temp_nino")
 	h.SessionManager.Remove(ctx, "temp_mtd_id")
 
-	// Clear the oauth state cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:     "oauth_state",
 		Value:    "",
@@ -181,17 +194,11 @@ func (h *Handler) handleAuthCallback(w http.ResponseWriter, r *http.Request) {
 		Secure:   h.Config.AppEnv == "production",
 	})
 
-	slog.Info("hmrc connected successfully",
-		"user_id", userID,
-		"mtd_id", mtdID,
-	)
-
-	// 8. Redirect to Dashboard
+	slog.Info("hmrc connected successfully", "user_id", userID, "mtd_id", mtdID)
 	http.Redirect(w, r, "/app/dashboard", http.StatusSeeOther)
 }
 
 // GetValidHMRCToken retrieves a valid access token for a user.
-// If the current token is expired, it automatically refreshes it and updates the DB.
 func (h *Handler) GetValidHMRCToken(ctx context.Context, userID uuid.UUID) (string, error) {
 	// 1. Get current connection details from DB
 	conn, err := h.DB.GetHMRCConnectionByUserID(ctx, database.UUIDToPgtype(userID))
@@ -203,39 +210,53 @@ func (h *Handler) GetValidHMRCToken(ctx context.Context, userID uuid.UUID) (stri
 	}
 
 	// 2. Check Expiry
-	// We add a 5-minute buffer. If it expires in < 5 mins, treat it as expired now.
-	// This prevents race conditions where the token expires *during* the API call.
-	expiry := conn.TokenExpiry.Time
-	if time.Now().Add(5 * time.Minute).Before(expiry) {
-		// Token is still valid!
-		return conn.AccessToken, nil
+	if time.Now().Add(5 * time.Minute).Before(conn.TokenExpiry.Time) {
+		// Token is valid! DECRYPT IT before returning.
+		decryptedToken, err := hmrc.Decrypt(conn.AccessToken, h.Config.TokenEncryptionKey)
+		if err != nil {
+			return "", fmt.Errorf("failed to decrypt access token: %w", err)
+		}
+		return decryptedToken, nil
 	}
 
 	slog.Info("hmrc token expired (or close to expiry), refreshing...", "user_id", userID)
 
 	// 3. Token is Expired: Refresh it
-	authService := hmrc.NewAuthService(h.Config)
-
-	// We need the refresh token. If it's missing, the user must re-login.
 	if conn.RefreshToken == "" {
 		slog.Warn("hmrc refresh token missing, user needs to re-authenticate", "user_id", userID)
 		return "", fmt.Errorf("refresh token missing, user needs to re-authenticate")
 	}
 
-	newToken, err := authService.RefreshAccessToken(conn.RefreshToken)
+	// DECRYPT refresh token to use it
+	decryptedRefreshToken, err := hmrc.Decrypt(conn.RefreshToken, h.Config.TokenEncryptionKey)
 	if err != nil {
-		// If refresh fails (e.g. user revoked access), we might want to log it specifically
+		return "", fmt.Errorf("failed to decrypt refresh token for rotation: %w", err)
+	}
+
+	authService := hmrc.NewAuthService(h.Config)
+	newToken, err := authService.RefreshAccessToken(decryptedRefreshToken)
+	if err != nil {
 		slog.Error("failed to refresh hmrc token", "user_id", userID, "error", err)
 		return "", fmt.Errorf("failed to refresh token: %w", err)
 	}
 
-	// 4. Update Database
-	// We use Upsert to overwrite the old keys with the new ones
+	// 4. Encrypt NEW tokens before saving
+	encryptedAccess, err := hmrc.Encrypt(newToken.AccessToken, h.Config.TokenEncryptionKey)
+	if err != nil {
+		return "", fmt.Errorf("failed to encrypt new access token: %w", err)
+	}
+
+	encryptedRefresh, err := hmrc.Encrypt(newToken.RefreshToken, h.Config.TokenEncryptionKey)
+	if err != nil {
+		return "", fmt.Errorf("failed to encrypt new refresh token: %w", err)
+	}
+
+	// 5. Update Database
 	_, err = h.DB.UpsertHMRCConnection(ctx, database.UpsertHMRCConnectionParams{
 		UserID:       database.UUIDToPgtype(userID),
-		MtdID:        conn.MtdID, // Keep existing MTD ID
-		AccessToken:  newToken.AccessToken,
-		RefreshToken: newToken.RefreshToken, // HMRC rotates refresh tokens too!
+		MtdID:        conn.MtdID,
+		AccessToken:  encryptedAccess,
+		RefreshToken: encryptedRefresh,
 		TokenExpiry:  database.TimeToPgtype(newToken.Expiry),
 	})
 
@@ -246,6 +267,6 @@ func (h *Handler) GetValidHMRCToken(ctx context.Context, userID uuid.UUID) (stri
 
 	slog.Info("hmrc token refreshed successfully", "user_id", userID)
 
-	// 5. Return the new valid Access Token
+	// Return the plaintext token so the app can use it immediately
 	return newToken.AccessToken, nil
 }
