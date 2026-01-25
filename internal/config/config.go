@@ -46,7 +46,7 @@ func Load() *Config {
 
 func getEnv(key, defaultValue string) string {
 	if value, exists := os.LookupEnv(key); exists {
-		return value
+		return strings.TrimSpace(value)
 	}
 	return defaultValue
 }
