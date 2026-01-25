@@ -104,11 +104,7 @@ func (h *Handler) handleLogout(w http.ResponseWriter, r *http.Request) {
 	// 1. Renew the token (security best practice to prevent session fixation)
 	_ = h.SessionManager.RenewToken(r.Context())
 
-	// 2. Remove the session data
-	// Option A: Just remove the UserID (keeps flash messages etc)
-	// h.SessionManager.Remove(r.Context(), "userID")
-
-	// Option B: Nuke the whole session (Cleaner)
+	// 2. Clean up entire session
 	_ = h.SessionManager.Destroy(r.Context())
 
 	// 3. Redirect to Home/Login

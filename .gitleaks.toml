@@ -1,0 +1,15 @@
+title = "Dividr Gitleaks Config"
+
+[extend]
+useDefault = true
+
+# Block specific paths - these should NEVER contain secrets
+[[rules]]
+id = "block-secrets-folder"
+description = "Prevent committing docker/secrets/ directory"
+path = '''docker/secrets/'''
+
+[[rules]]
+id = "block-test-data"
+description = "Prevent committing test data with credentials"
+path = '''docs/.*\.json$'''
