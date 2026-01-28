@@ -24,6 +24,11 @@ func TestSimulationMode(t *testing.T) {
 	// Because config.go looks in "./docker/...", which fails from the "tests" folder.
 	if os.Getenv("TOKEN_ENCRYPTION_KEY") == "" {
 		keyPath := "../docker/secrets/.crypto_key"
+
+		if _, err := os.Stat(keyPath); os.IsNotExist(err) {
+			keyPath = "./docker/secrets/.crypto_key" // Fallback for nested tests
+		}
+
 		key, err := os.ReadFile(keyPath)
 		if err != nil {
 			t.Logf("⚠️ Could not find secret at %s, and .env failed.", keyPath)
