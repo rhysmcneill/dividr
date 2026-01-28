@@ -4,6 +4,8 @@
 
 Dividr simplifies the transition to Making Tax Digital (MTD) for Income Tax Self Assessment (ITSA). It acts as a smart bridge between your spreadsheets and HMRC, handling the complexity of quarterly updates without forcing you to abandon your existing workflow.
 
+> 📖 **Want to know what Dividr can do?** See the comprehensive [Capabilities Guide](docs/CAPABILITIES.md) for detailed feature documentation.
+
 
 ## 🏗️ Architecture: The Session-Based Bridge
 Dividr utilizes a **Session-Based Persistence** model. This hybrid approach balances user convenience with strict data minimization:
