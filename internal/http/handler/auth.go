@@ -101,10 +101,12 @@ func (h *Handler) handleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) handleLogout(w http.ResponseWriter, r *http.Request) {
-	// Destroy session
-	if err := h.SessionManager.Destroy(r.Context()); err != nil {
-		h.respondWithError(w, r, err)
-		return
-	}
+	// 1. Renew the token (security best practice to prevent session fixation)
+	_ = h.SessionManager.RenewToken(r.Context())
+
+	// 2. Clean up entire session
+	_ = h.SessionManager.Destroy(r.Context())
+
+	// 3. Redirect to Home/Login
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

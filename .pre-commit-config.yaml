@@ -29,6 +29,20 @@ repos:
         pass_filenames: false
         files: \.go$
 
+      - id: block-secrets-folder
+        name: Block docker/secrets/ directory
+        entry: bash -c 'if git diff --cached --name-only | grep -q "^docker/secrets/"; then echo "ERROR - Files in docker/secrets/ should never be committed!"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: block-test-data
+        name: Block test data files
+        entry: bash -c 'if git diff --cached --name-only | grep -qE "^docs/.*\.json$"; then echo "ERROR - Test data files in docs/ should never be committed!"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        always_run: true
+
   # General file quality
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0

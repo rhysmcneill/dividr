@@ -81,7 +81,7 @@ func Base(title string, isLoggedIn bool) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<a href=\"/app/dashboard\" class=\"text-sm font-semibold text-zinc-300 hover:text-white transition-colors\">Dashboard</a> <a href=\"/logout\" class=\"rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition-colors\">Sign out</a>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<a href=\"/app/dashboard\" class=\"text-sm font-semibold text-zinc-300 hover:text-white transition-colors\">Dashboard</a><form action=\"/logout\" method=\"POST\" class=\"inline\"><button type=\"submit\" class=\"rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition-colors\">Sign out</button></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
