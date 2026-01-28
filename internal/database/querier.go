@@ -12,6 +12,7 @@ import (
 
 type Querier interface {
 	CheckWaitlistEmail(ctx context.Context, email string) (bool, error)
+	CreateAuditEvent(ctx context.Context, arg CreateAuditEventParams) (CreateAuditEventRow, error)
 	CreateImportBatch(ctx context.Context, arg CreateImportBatchParams) (TransactionImportBatch, error)
 	CreateReceipt(ctx context.Context, arg CreateReceiptParams) (Receipt, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)

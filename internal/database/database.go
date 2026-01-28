@@ -28,6 +28,10 @@ func Connect(cfg *config.Config) (*Service, error) {
 		return nil, fmt.Errorf("unable to connect to database: %w", err)
 	}
 
+	pool.Config().MaxConns = int32(cfg.DBMaxConns)
+	pool.Config().MinConns = int32(cfg.DBMinConns)
+	pool.Config().MaxConnIdleTime = cfg.DBMaxConnIdle
+
 	// 2. Fast Ping to verify
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
