@@ -6,6 +6,21 @@ Dividr simplifies the transition to Making Tax Digital (MTD) for Income Tax Self
 
 > 📖 **Want to know what Dividr can do?** See the comprehensive [Capabilities Guide](docs/CAPABILITIES.md) for detailed feature documentation.
 
+## 🎯 What Does Dividr Do?
+
+**In Short**: Dividr helps UK sole traders and landlords digitally file quarterly tax updates to HMRC while keeping their existing spreadsheet workflows.
+
+**Key Actions**:
+1. 📊 **Import** - Upload your transaction spreadsheets (CSV)
+2. 🔀 **Categorize** - Automatically map to HMRC tax categories
+3. ✂️ **Separate** - Split hybrid income into Sole Trade & UK Property streams
+4. 📤 **Submit** - Send quarterly updates directly to HMRC via secure API
+5. 🧾 **Preserve** - Generate immutable receipts with HMRC correlation IDs
+6. 🗑️ **Purge** - Automatically delete raw transaction data after submission
+
+**Privacy Promise**: Your detailed transactions are never permanently stored. Only submission receipts remain for compliance.
+
+---
 
 ## 🏗️ Architecture: The Session-Based Bridge
 Dividr utilizes a **Session-Based Persistence** model. This hybrid approach balances user convenience with strict data minimization:
