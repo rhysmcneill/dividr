@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 
 
+## [v0.8.0] - 2026-01-28
+
+**Type:** MINOR
+
+### Changes
+- improvement: introduce fallback for docker secrets
+- minor: HMRC Connectivity & Security Core
+- chore: Update comment for auth.go
+- wip: fraud detection and crypto improvements
+- wip: fraud detection and crypto improvements
+
+
 ## [v0.7.1] - 2026-01-24
 
 **Type:** PATCH
